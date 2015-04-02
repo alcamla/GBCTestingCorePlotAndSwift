@@ -14,6 +14,9 @@
 		6CA8F3BD1ACC980D001C89DC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6CA8F3BC1ACC980D001C89DC /* Images.xcassets */; };
 		6CA8F3C01ACC980D001C89DC /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6CA8F3BE1ACC980D001C89DC /* LaunchScreen.xib */; };
 		6CA8F3CC1ACC980D001C89DC /* GBCTestingCorePlotAndSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA8F3CB1ACC980D001C89DC /* GBCTestingCorePlotAndSwiftTests.swift */; };
+		6CA8F3ED1ACCA75A001C89DC /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CA8F3EA1ACCA673001C89DC /* libCorePlot-CocoaTouch.a */; };
+		6CA8F3EF1ACCA805001C89DC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CA8F3EE1ACCA805001C89DC /* QuartzCore.framework */; };
+		6CA8F3F11ACCA80B001C89DC /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CA8F3F01ACCA80B001C89DC /* Accelerate.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,6 +26,48 @@
 			proxyType = 1;
 			remoteGlobalIDString = 6CA8F3AC1ACC980D001C89DC;
 			remoteInfo = GBCTestingCorePlotAndSwift;
+		};
+		6CA8F3E11ACCA673001C89DC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6CA8F3D51ACCA672001C89DC /* CorePlot.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
+			remoteInfo = CorePlot;
+		};
+		6CA8F3E31ACCA673001C89DC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6CA8F3D51ACCA672001C89DC /* CorePlot.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0730F600109492D800E95162;
+			remoteInfo = UnitTests;
+		};
+		6CA8F3E51ACCA673001C89DC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6CA8F3D51ACCA672001C89DC /* CorePlot.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C38A09781A46185200D45436;
+			remoteInfo = CorePlot_iOS;
+		};
+		6CA8F3E71ACCA673001C89DC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6CA8F3D51ACCA672001C89DC /* CorePlot.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C38A09821A46185300D45436;
+			remoteInfo = CorePlot_iOSTests;
+		};
+		6CA8F3E91ACCA673001C89DC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6CA8F3D51ACCA672001C89DC /* CorePlot.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C38A09BA1A4619A900D45436;
+			remoteInfo = "CorePlot-CocoaTouch";
+		};
+		6CA8F3EB1ACCA673001C89DC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6CA8F3D51ACCA672001C89DC /* CorePlot.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C38A09C41A4619A900D45436;
+			remoteInfo = "CorePlot-CocoaTouchTests";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -38,6 +83,10 @@
 		6CA8F3C51ACC980D001C89DC /* GBCTestingCorePlotAndSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GBCTestingCorePlotAndSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CA8F3CA1ACC980D001C89DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6CA8F3CB1ACC980D001C89DC /* GBCTestingCorePlotAndSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GBCTestingCorePlotAndSwiftTests.swift; sourceTree = "<group>"; };
+		6CA8F3D51ACCA672001C89DC /* CorePlot.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CorePlot.xcodeproj; path = "../../../repos/core-plot/framework/CorePlot.xcodeproj"; sourceTree = "<group>"; };
+		6CA8F3EE1ACCA805001C89DC /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		6CA8F3F01ACCA80B001C89DC /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		6CFD12411ACCAF8100CE3961 /* TestingCorePlotAndSwift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TestingCorePlotAndSwift-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +94,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CA8F3F11ACCA80B001C89DC /* Accelerate.framework in Frameworks */,
+				6CA8F3EF1ACCA805001C89DC /* QuartzCore.framework in Frameworks */,
+				6CA8F3ED1ACCA75A001C89DC /* libCorePlot-CocoaTouch.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +113,9 @@
 		6CA8F3A41ACC980D001C89DC = {
 			isa = PBXGroup;
 			children = (
+				6CA8F3F01ACCA80B001C89DC /* Accelerate.framework */,
+				6CA8F3EE1ACCA805001C89DC /* QuartzCore.framework */,
+				6CA8F3D51ACCA672001C89DC /* CorePlot.xcodeproj */,
 				6CA8F3AF1ACC980D001C89DC /* GBCTestingCorePlotAndSwift */,
 				6CA8F3C81ACC980D001C89DC /* GBCTestingCorePlotAndSwiftTests */,
 				6CA8F3AE1ACC980D001C89DC /* Products */,
@@ -79,6 +134,7 @@
 		6CA8F3AF1ACC980D001C89DC /* GBCTestingCorePlotAndSwift */ = {
 			isa = PBXGroup;
 			children = (
+				6CFD12401ACCAF1800CE3961 /* Other Sources */,
 				6CA8F3B21ACC980D001C89DC /* AppDelegate.swift */,
 				6CA8F3B71ACC980D001C89DC /* ViewController.swift */,
 				6CA8F3B91ACC980D001C89DC /* Main.storyboard */,
@@ -113,6 +169,27 @@
 				6CA8F3CA1ACC980D001C89DC /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		6CA8F3D61ACCA672001C89DC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6CA8F3E21ACCA673001C89DC /* CorePlot.framework */,
+				6CA8F3E41ACCA673001C89DC /* UnitTests.xctest */,
+				6CA8F3E61ACCA673001C89DC /* CorePlot_iOS.framework */,
+				6CA8F3E81ACCA673001C89DC /* CorePlot_iOSTests.xctest */,
+				6CA8F3EA1ACCA673001C89DC /* libCorePlot-CocoaTouch.a */,
+				6CA8F3EC1ACCA673001C89DC /* CorePlot-CocoaTouchTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6CFD12401ACCAF1800CE3961 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				6CFD12411ACCAF8100CE3961 /* TestingCorePlotAndSwift-Bridging-Header.h */,
+			);
+			name = "Other Sources";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -182,6 +259,12 @@
 			mainGroup = 6CA8F3A41ACC980D001C89DC;
 			productRefGroup = 6CA8F3AE1ACC980D001C89DC /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 6CA8F3D61ACCA672001C89DC /* Products */;
+					ProjectRef = 6CA8F3D51ACCA672001C89DC /* CorePlot.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				6CA8F3AC1ACC980D001C89DC /* GBCTestingCorePlotAndSwift */,
@@ -189,6 +272,51 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		6CA8F3E21ACCA673001C89DC /* CorePlot.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CorePlot.framework;
+			remoteRef = 6CA8F3E11ACCA673001C89DC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6CA8F3E41ACCA673001C89DC /* UnitTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = UnitTests.xctest;
+			remoteRef = 6CA8F3E31ACCA673001C89DC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6CA8F3E61ACCA673001C89DC /* CorePlot_iOS.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CorePlot_iOS.framework;
+			remoteRef = 6CA8F3E51ACCA673001C89DC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6CA8F3E81ACCA673001C89DC /* CorePlot_iOSTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = CorePlot_iOSTests.xctest;
+			remoteRef = 6CA8F3E71ACCA673001C89DC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6CA8F3EA1ACCA673001C89DC /* libCorePlot-CocoaTouch.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libCorePlot-CocoaTouch.a";
+			remoteRef = 6CA8F3E91ACCA673001C89DC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6CA8F3EC1ACCA673001C89DC /* CorePlot-CocoaTouchTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "CorePlot-CocoaTouchTests.xctest";
+			remoteRef = 6CA8F3EB1ACCA673001C89DC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		6CA8F3AB1ACC980D001C89DC /* Resources */ = {
@@ -348,7 +476,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = GBCTestingCorePlotAndSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "/Users/appsdeveloper/Developer/iOS/TestsAndTrials/GBCTestingCorePlotAndSwift/GBCTestingCorePlotAndSwift/TestingCorePlotAndSwift-Bridging-Header.h";
+				USER_HEADER_SEARCH_PATHS = "\"${SRCROOT}/../../../repos/core-plot/framework\"/**";
 			};
 			name = Debug;
 		};
@@ -358,7 +492,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = GBCTestingCorePlotAndSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "/Users/appsdeveloper/Developer/iOS/TestsAndTrials/GBCTestingCorePlotAndSwift/GBCTestingCorePlotAndSwift/TestingCorePlotAndSwift-Bridging-Header.h";
+				USER_HEADER_SEARCH_PATHS = "\"${SRCROOT}/../../../repos/core-plot/framework\"/**";
 			};
 			name = Release;
 		};
@@ -415,6 +555,7 @@
 				6CA8F3D11ACC980D001C89DC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6CA8F3D21ACC980D001C89DC /* Build configuration list for PBXNativeTarget "GBCTestingCorePlotAndSwiftTests" */ = {
 			isa = XCConfigurationList;
@@ -423,6 +564,7 @@
 				6CA8F3D41ACC980D001C89DC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
