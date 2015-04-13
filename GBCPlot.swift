@@ -9,34 +9,41 @@
 import UIKit
 
 class GBCPlot: NSObject, CPTPlotDataSource{
+    
+    //MARK: -  Properties
+    
+    // The CPTPlot
     var plot:CPTScatterPlot
+    
+    // The data
     var plotData = [Double](){
         didSet{
+            
             println("The oldValue is \(oldValue)")
             if oldValue.count == 1 {
                 minValue = oldValue.last!
             }
-            //Check if the modification was an insertion or a deletion
+            // Check if the modification was an insertion or a deletion
                 let deltaInDataPoints = plotData.count - oldValue.count
                 if deltaInDataPoints > 0{
                     //Insertion
                     plot.insertDataAtIndex(UInt(plotData.count - 1 ), numberOfRecords: UInt(deltaInDataPoints))
-                    // check if the number of points is greater than the permited
+                    // Check if the number of points is greater than the permited
                     if plotData.count >= kMaxDataPoints{
+                        // Addition of new point
                         let overflow:Int = plotData.count - (kMaxDataPoints - 1)
-                        //deleteValuesFromBeginngTondex(overflow)
                         
-                        //Store removed Values
+                        // Store removed Values
                         let values = Array(plotData[0..<overflow])
                         
-                        //Removal
+                        // Removal
                         plotData.removeRange(Range(start: 0, end: overflow))
                         plot.deleteDataInIndexRange(NSMakeRange(0, overflow))
                         
-                        //Check if the value deleted was the current max or min.
+                        // Check if the value deleted was the current max or min.
                         requiresMinMaxUpdate(values)
                     } else{
-                        //Check if the value deleted was the current max or min.
+                        // Check if the value deleted was the current max or min.
                         requiresMinMaxUpdate([plotData.last!])
                     }
                     
@@ -54,9 +61,9 @@ class GBCPlot: NSObject, CPTPlotDataSource{
                     ViewController.SimulationProperties.minValue = dataValue
                 }
             }
-            
-        }        
+        }
         willSet{
+            
             // Check if the new value updates the max or min 
             if let dataValue = newValue.last{
                 if dataValue > ViewController.SimulationProperties.maxValue{
@@ -69,7 +76,10 @@ class GBCPlot: NSObject, CPTPlotDataSource{
         }
     }
     
+    // Indicates the location in the graph
     var locationIndex:Int?
+    
+    // Stores the minimum value being plotted
     var minValue: Double = 0 {
         didSet{
             if let location = locationIndex{
@@ -79,6 +89,8 @@ class GBCPlot: NSObject, CPTPlotDataSource{
         }
 
     }
+    
+    // Stores the max value being plotted
     var maxValue: Double = 0{
         didSet{
             if let location = locationIndex{
@@ -88,19 +100,50 @@ class GBCPlot: NSObject, CPTPlotDataSource{
         }
     }
     
+    
+    // MARK: - Initializers
+    override init(){
+        // Create the Plot
+        plot = CPTScatterPlot(frame: CGRectZero)
+        plot.cachePrecision = .Double
+        
+        // Set the lineStyle for the plot
+        let plotLineStyle = plot.dataLineStyle.mutableCopy() as! CPTMutableLineStyle
+        plotLineStyle.lineWidth = 3.0
+        plotLineStyle.lineColor = CPTColor.greenColor()
+        plot.dataLineStyle = plotLineStyle
+        
+        super.init()
+        plot.dataSource = self
+    }
+    
+    convenience init(identifier:String) {
+        self.init()
+        plot.identifier = identifier
+    }
+    
+    convenience init(identifier:String, lineStyle:CPTLineStyle){
+        self.init(identifier: identifier)
+        plot.dataLineStyle = lineStyle
+    }
+    
+    // MARK: - Methods 
+    
+    /** Deletes values from the plotData and the plot itself */
     func deleteValuesFromBeginngTondex(index:Int){
-        //Store removed Values
+        // Store removed Values
         let values = Array(plotData[0..<index])
         
-        //Removal
+        // Removal
         plotData.removeRange(Range(start: 0, end: index))
         plot.deleteDataInIndexRange(NSMakeRange(0, index))
         
-        //Check if the value deleted was the current max or min.
+        // Check if the value deleted was the current max or min.
         requiresMinMaxUpdate(values)
         
     }
     
+    /**Indicates if a new min o new max must be calculated after deleting a range of data from the plot */
     func requiresMinMaxUpdate(valuesToDelete:[Double]) -> (updateMin:Bool, updateMax:Bool){
         var mustUpdate = (updateMin:false, updateMax:false)
         for value in valuesToDelete{
@@ -120,32 +163,21 @@ class GBCPlot: NSObject, CPTPlotDataSource{
         return mustUpdate
     }
     
-    override init(){
-        // Create the Plot
-        plot = CPTScatterPlot(frame: CGRectZero)
-        //plot.identifier = kPlotIdentifier
-        plot.cachePrecision = .Double
+    /** Adds new Data to plot. The new value to add  is calculated by the method itself */
+    func addDataToPlot(){
+        let newValue:Double!
+        if let lastValue = plotData.last as Double?{
+            newValue = ((1.0-kAlpha) * lastValue) + (kAlpha * Double(arc4random()))/Double(UInt32.max)
+            println("The new value is \(newValue)")
+        } else{
+            newValue = (kAlpha * Double(arc4random()))/Double(UInt32.max)
+            println("Version without last value is being used")
+        }
+        plotData.append(newValue)
         
-        //Set the lineStyle for the plot
-        let plotLineStyle = plot.dataLineStyle.mutableCopy() as! CPTMutableLineStyle
-        plotLineStyle.lineWidth = 3.0
-        plotLineStyle.lineColor = CPTColor.greenColor()
-        plot.dataLineStyle = plotLineStyle
-        
-        super.init()
-        plot.dataSource = self
     }
     
-    convenience init(identifier:String) {
-        self.init()
-        plot.identifier = identifier
-    }
-    
-    // Create another convinience initializer to set the line properties of the plot
-    convenience init(identifier:String, lineStyle:CPTLineStyle){
-        self.init(identifier: identifier)
-        plot.dataLineStyle = lineStyle
-    }
+    // MARK: - PlotDataSource protocol conformance
     
     func numberOfRecordsForPlot(plot: CPTPlot!) -> UInt {
          return UInt(plotData.count)
@@ -161,7 +193,7 @@ class GBCPlot: NSObject, CPTPlotDataSource{
         case .Y:
             
             var num = plotData[Int(idx)]
-            //Consider the possible offset to correctly visualize the plots in the graph
+            // Consider the possible offset to correctly visualize the plots in the graph
             if let location = locationIndex{
                 num = num + (Double(location)*0.2)
             }
@@ -172,16 +204,5 @@ class GBCPlot: NSObject, CPTPlotDataSource{
         }
     }
     
-    func addDataToPlot(){
-        let newValue:Double!
-        if let lastValue = plotData.last as Double?{
-            newValue = ((1.0-kAlpha) * lastValue) + (kAlpha * Double(arc4random()))/Double(UInt32.max)
-            println("The new value is \(newValue)")
-        } else{
-            newValue = (kAlpha * Double(arc4random()))/Double(UInt32.max)
-            println("Version without last value is being used")
-        }
-        plotData.append(newValue)
-        
-    }
+
 }

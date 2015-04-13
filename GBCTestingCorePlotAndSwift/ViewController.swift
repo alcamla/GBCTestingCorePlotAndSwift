@@ -20,7 +20,7 @@ class ViewController: UIViewController {
     
     // MARK: - Properties
     
-    //A Timer to update the plot's data
+    // A Timer to update the plot's data
     private var dataTimer:NSTimer? = nil
     
     // The Graph
@@ -54,14 +54,7 @@ class ViewController: UIViewController {
         static var minValues:Dictionary = [String:Double]()
     }
     
-    class func updateMaxValueForPlotWithIdentifier(identifier:String, newValue:Double){
-        SimulationProperties.maxValues.updateValue(newValue, forKey: identifier)
-    }
-    
-    class func updateMinValueForPlotWithIdentifier(identifier:String, newValue:Double){
-        SimulationProperties.minValues.updateValue(newValue, forKey: identifier)
-    }
-    
+
     
     // MARK:- Initialization
     
@@ -173,7 +166,7 @@ class ViewController: UIViewController {
         plotSpace.xRange = CPTPlotRange(location: 0.0, length: (200 - 2))
         plotSpace.yRange = yRange
         
-        //Set up the animation
+        // Set up the animation
         dataTimer = NSTimer(timeInterval: 1.0/kFrameRate, target: self, selector: Selector("newData:"), userInfo: nil, repeats: true)
         NSRunLoop.mainRunLoop().addTimer(self.dataTimer!, forMode: NSRunLoopCommonModes)
         generateData()
@@ -195,16 +188,17 @@ class ViewController: UIViewController {
         let location = (SimulationProperties.index >= kMaxDataPoints ? (SimulationProperties.index - kMaxDataPoints + 2): 0)
         let oldRange = CPTPlotRange(location: (location > 0 ? (location - 1) : 0) , length: kMaxDataPoints-2)
         let newRange = CPTPlotRange(location: location, length: (kMaxDataPoints-2))
-        
         CPTAnimation.animate(plotSpace, property: "xRange", fromPlotRange: oldRange, toPlotRange: newRange, duration: CGFloat(1.0/kFrameRate))
+        
         // Y
-        //Find the max and min between all plots
+        // Find the max and min between all plots
         let mins = Array(SimulationProperties.minValues.values)
         var globalMin = mins.reduce(mins[0], combine: {min($0, $1)})
         globalMin = globalMin - 0.3
         let maxs = Array(SimulationProperties.maxValues.values)
         var globalMax = maxs.reduce(maxs[0], combine: {max($0, $1)})
-        //Increment a bit the max value
+        
+        // Increment a bit the max value
         globalMax  = globalMax + 0.3
         let realRangeLength = globalMax - globalMin
         if  (yRange.location as Double > globalMin) || realRangeLength != yRange.location{
@@ -215,7 +209,7 @@ class ViewController: UIViewController {
         
         SimulationProperties.index++
         
-        //Add data to all plots
+        // Add data to all plots
         for aPlot in plotsArray{
             aPlot.addDataToPlot()
         }
@@ -235,6 +229,15 @@ class ViewController: UIViewController {
         return titleSize
     }
     
+    // MARK: - Min Max refreshing
+    
+    class func updateMaxValueForPlotWithIdentifier(identifier:String, newValue:Double){
+        SimulationProperties.maxValues.updateValue(newValue, forKey: identifier)
+    }
+    
+    class func updateMinValueForPlotWithIdentifier(identifier:String, newValue:Double){
+        SimulationProperties.minValues.updateValue(newValue, forKey: identifier)
+    }
 }
 
 
