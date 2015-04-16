@@ -30,6 +30,21 @@ class realTimeStaticPlot: NSObject, RealTimeSubPlotContainer {
     // Min value of the plot
     var minValue:Double = 0
     
+    // Location of the plot in the graph
+    var locationIndex:Int = 0
+    
+    //
+    var plotDataSize:Int{
+        return graphContainer?.plotDataSize ?? 0
+    }
+    
+    var samplesPerFrame:Int{
+        return graphContainer!.samplesPerFrame
+    }
+    
+    // Stores the last value added to the plot
+    var lastValue:Double?
+    
     // MARK:  - Initializers
     
     init(identifier:String) {
@@ -60,21 +75,31 @@ class realTimeStaticPlot: NSObject, RealTimeSubPlotContainer {
     
     /** Adds new Data to plot. The new value to add  is calculated by the method itself */
     func addDataToPlot(){
-        //Remove points from the other subplot
+        
+        // Identify the roles of each subplotContainer
         let inactiveSubPlotIndex = activeSubPlotContainerIndex == 0 ? 1 : 0
         let inactiveSubPlot = subPlotsContainers[inactiveSubPlotIndex]
-        inactiveSubPlot.removeDataPointsFromPlot(1)
         let subPlotContainer = subPlotsContainers[activeSubPlotContainerIndex]
-        let array:[Double]!
-        let newValue:Double!
-        //if let lastValue = plotData.last?.value as Double?{
-        if let lastValue = subPlotContainer.plotData.last?.value as Double?{
-            newValue = ((1.0-kAlpha) * lastValue) + (kAlpha * Double(arc4random()))/Double(UInt32.max)
-        } else{
-            newValue = (kAlpha * Double(arc4random()))/Double(UInt32.max)
+        
+        if let dataPointsAmount = graphContainer?.samplesPerFrame{
+            
+            // Remove the given number of dataPoints
+            inactiveSubPlot.removeDataPointsFromPlot(dataPointsAmount)
+            
+            // Insert the given number of dataPoints in the active subplot
+            var array:[Double] = [Double]()
+            var newValue:Double!
+            for index in 0 ..< dataPointsAmount {
+                if lastValue != nil {
+                    newValue = ((1.0-kAlpha) * lastValue!) + (kAlpha * Double(arc4random()))/Double(UInt32.max)
+                } else {
+                    newValue = (kAlpha * Double(arc4random()))/Double(UInt32.max)
+                }
+                lastValue = newValue
+                array.append(newValue)
+            }
+            subPlotContainer.addDataPointsToPlot(array)
         }
-        array = [newValue]
-        subPlotContainer.addDataPointsToPlot(array)
     }
     
     //MARK: - RealTimeSubPlotContainer protocol conformance

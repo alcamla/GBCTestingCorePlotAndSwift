@@ -27,14 +27,13 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
             if let newPlot = newValue.last as realTimeStaticPlot!{
                 realTimeScatterGraph!.addPlot(newPlot.subPlotsContainers[0].plot)
                 realTimeScatterGraph!.addPlot(newPlot.subPlotsContainers[1].plot)
-                //Asign the location property
-                //newPlot.locationIndex = newValue.count-1
+                // Asign the location property
+                newPlot.locationIndex = newValue.count-1
                 //Assign the maxValue to MaxValues
                 SimulationProperties.maxValues[newPlot.identifier] = newPlot.maxValue
                 SimulationProperties.minValues[newPlot.identifier] = newPlot.minValue
                 newPlot.graphContainer = self
             }
-            
         }
     }
     
@@ -46,27 +45,33 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         static var minValue: Double = 0
         static var maxValues:Dictionary = [String:Double]()
         static var minValues:Dictionary = [String:Double]()
-        static var samplingFrequency:Double = 50.0
+        static var samplingFrequency:Double = 100.0
         static var visualizingTime:Double = 10.0
-        static var frequencyDownscaleFactor:Int = 5
+        static var frequencyDownscaleFactor:Int = 10
     }
     
+    // Frequency at wich the signals are sampled
     var samplingFrequency:Double{
         return SimulationProperties.samplingFrequency
     }
     
+    // Time interval being visualized
     var visualizingTime:Double{
         return SimulationProperties.visualizingTime
     }
     
+    // The number of samples of a plot that can be visualized in the graph for the visualizing time set
     var plotDataSize:Int{
-        return Int((samplingFrequency * visualizingTime) + 1)
+        //return Int((samplingFrequency * visualizingTime) + 1)
+        return Int(samplingFrequency * visualizingTime)
     }
     
+    // The number of samples inserted on each call to the newData method.
     var samplesPerFrame:Int{
         return SimulationProperties.frequencyDownscaleFactor
     }
     
+    // The number of interruptions per second to insert new data.
     var frameRate:Double{
         //Verify if the relation can be hold. The sampling frequency must be a multiple of the frame rate
         assert(Int(samplingFrequency)%SimulationProperties.frequencyDownscaleFactor == 0, "Not a valid downscale factor")
@@ -161,11 +166,12 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         
         // First plot
         var plotLineStyle = CPTMutableLineStyle()
-        plotLineStyle.lineWidth = 3.0
+        plotLineStyle.lineWidth = 0.5
         plotLineStyle.lineColor = CPTColor.greenColor()
         var  plot = realTimeStaticPlot(identifier: kPlotIdentifier, lineStyle: plotLineStyle)
         plotsArray.append(plot)
         
+        /**
         // Second plot
         plotLineStyle.lineWidth = 3.0
         plotLineStyle.lineColor = CPTColor.redColor()
@@ -178,27 +184,29 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         plot = realTimeStaticPlot(identifier: "ThirdPlot", lineStyle: plotLineStyle)
         plotsArray.append(plot)
         
-        // First plot
+        // Fourth plot
         plotLineStyle.lineWidth = 3.0
         plotLineStyle.lineColor = CPTColor.blackColor()
-        plot = realTimeStaticPlot(identifier: "SixthPlot", lineStyle: plotLineStyle)
-        plotsArray.append(plot)
-        
-        // Second plot
-        plotLineStyle.lineWidth = 3.0
-        plotLineStyle.lineColor = CPTColor.brownColor()
         plot = realTimeStaticPlot(identifier: "FourthPlot", lineStyle: plotLineStyle)
         plotsArray.append(plot)
         
-        // Third plot
+        // Fifth plot
         plotLineStyle.lineWidth = 3.0
-        plotLineStyle.lineColor = CPTColor.magentaColor()
+        plotLineStyle.lineColor = CPTColor.brownColor()
         plot = realTimeStaticPlot(identifier: "FifthPlot", lineStyle: plotLineStyle)
         plotsArray.append(plot)
         
+        // Sixth plot
+        plotLineStyle.lineWidth = 3.0
+        plotLineStyle.lineColor = CPTColor.magentaColor()
+        plot = realTimeStaticPlot(identifier: "SixthPlot", lineStyle: plotLineStyle)
+        plotsArray.append(plot)
+
+        */
+        
         // Plot Space
         let plotSpace = realTimeScatterGraph!.defaultPlotSpace as! CPTXYPlotSpace
-        plotSpace.xRange = CPTPlotRange(location: 0.0, length: (plotDataSize - 1))
+        plotSpace.xRange = CPTPlotRange(location: 0.0, length: plotDataSize)
         plotSpace.yRange = yRange
         
         // Set up the animation
@@ -234,7 +242,7 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         if  (yRange.location as Double > globalMin) || realRangeLength != yRange.location{
             let oldRange = yRange
             yRange = CPTPlotRange(location: globalMin, length: realRangeLength)
-            //CPTAnimation.animate(plotSpace, property: "yRange", fromPlotRange: oldRange, toPlotRange: yRange, duration: CGFloat(1.0/kFrameRate))
+            CPTAnimation.animate(plotSpace, property: "yRange", fromPlotRange: oldRange, toPlotRange: yRange, duration: CGFloat(1.0/kFrameRate))
         }
         
         SimulationProperties.index++

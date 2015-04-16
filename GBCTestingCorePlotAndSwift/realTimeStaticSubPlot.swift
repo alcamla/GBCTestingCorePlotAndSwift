@@ -45,7 +45,7 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
                 currentIndex++
                 
                 // Check if the number of points is greater than the permited
-                if plotData.count == kRealTimeMaxDataPoints{
+                if plotData.count == plotContainer!.plotDataSize{
                     
                     isArrayBlockedForAppendings = true
                     if let plotCont = plotContainer{
@@ -55,9 +55,11 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
                     }
                     
                     // Remove the first samples of the plot
-                    
-                    // Store the values to be removed
-                    let dataPoints = Array(plotData[0..<4])
+                    //At first, remove 2 times the number of samples inserted per frame
+                    // Store the values to be removed.
+                    let numberOfSamplesToRemove = plotContainer!.samplesPerFrame * 2
+                    //let numberOfSamplesToRemove = Int(Double(plotContainer!.plotDataSize)*0.1)
+                    let dataPoints = Array(plotData[0..<numberOfSamplesToRemove])
                     var dataValues = [Double]()
                     for dataPoint in dataPoints{
                         let dataValue = dataPoint.value
@@ -65,8 +67,8 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
                     }
                     
                     // Removal
-                    plotData.removeRange(Range(start: 0, end: 4))
-                    plot.deleteDataInIndexRange(NSMakeRange(0, 4))
+                    plotData.removeRange(Range(start: 0, end: numberOfSamplesToRemove))
+                    plot.deleteDataInIndexRange(NSMakeRange(0, numberOfSamplesToRemove))
                     
                     // Check if the value deleted was the current max or min.
                     requiresMinMaxUpdate(dataValues)
@@ -129,16 +131,13 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
         var value=0.0
     }
     
-    // Indicates the location in the graph
-    var locationIndex:Int?
-    
     // Index of the next dataPoint, in relation to the graph
     var currentIndex = 0
 
     // Stores the minimum value being plotted
     var minValue: Double = 0 {
         didSet{
-            if let location = locationIndex{
+            if let location = plotContainer?.locationIndex{
                 minValue = minValue + (Double(location)*0.2)
             }
             if let plotCont = plotContainer{
@@ -150,7 +149,7 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
     // Stores the max value being plotted
     var maxValue: Double = 0{
         didSet{
-            if let location = locationIndex{
+            if let location = plotContainer?.locationIndex{
                 maxValue = maxValue + (Double(location)*0.2)
             }
             if let plotCont = plotContainer{
@@ -225,7 +224,7 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
         //Check if the value can be added
         var newDataPoint:DataPoint
         for var index = 0; index < values.count; ++index{
-            if !isArrayBlockedForAppendings && plotData.count < kRealTimeMaxDataPoints{
+            if !isArrayBlockedForAppendings && plotData.count < plotContainer!.plotDataSize{
                 newDataPoint = DataPoint(index: currentIndex, value: values[index])
                 plotData.append(newDataPoint)
             } else{
@@ -239,8 +238,8 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
     /** Removes the indicated number of dataPoints from the plots. FIFO */
     func removeDataPointsFromPlot(numberOfDataPoints:Int) -> Bool{
         if  numberOfDataPoints <= plotData.count{
-            //plotData.removeRange(Range(start: 0, end: numberOfDataPoints))
-            plotData.removeLast()
+            plotData.removeRange(Range(start: 0, end: numberOfDataPoints))
+            //plotData.removeLast()
             return true
         }
         return false
@@ -263,7 +262,7 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
             var dataPoint = plotData[Int(idx)]
             var dataValue = dataPoint.value
             // Consider the possible offset to correctly visualize the plots in the graph
-            if let location = locationIndex{
+            if let location = plotContainer?.locationIndex{
                 dataValue = dataValue + (Double(location)*0.2)
             }
             return dataValue as NSNumber
@@ -278,5 +277,9 @@ protocol RealTimeSubPlotContainer{
     
     func updateMaxValueForPlotSegmentWithIdentifier(identifier:String, newValue:Double)
     func updateMinValueForPlotSegmentWithIdentifier(identifier:String, newValue:Double)
-    func plotStackIsFull(subPlot:realTimeStaticSubPlot)    
+    func plotStackIsFull(subPlot:realTimeStaticSubPlot)
+    var locationIndex:Int {get}
+    var plotDataSize:Int {get}
+    var samplesPerFrame:Int {get}
+    
 }
