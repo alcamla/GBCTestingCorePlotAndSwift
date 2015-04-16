@@ -15,6 +15,9 @@ class GBCPlot: NSObject, CPTPlotDataSource{
     // The CPTPlot
     var plot:CPTScatterPlot
     
+    //The graphContainer
+    var graphContainer:CPTGraphContainer?
+    
     // The data
     var plotData = [Double](){
         didSet{
@@ -85,7 +88,9 @@ class GBCPlot: NSObject, CPTPlotDataSource{
             if let location = locationIndex{
                 minValue = minValue + (Double(location)*0.2)
             }
-            ViewController.updateMinValueForPlotWithIdentifier(plot.identifier as! String, newValue: minValue)
+            if let graphCont = graphContainer{
+                graphCont.updateMinValueForPlotWithIdentifier(plot.identifier as! String, newValue: minValue)
+            }
         }
 
     }
@@ -96,7 +101,9 @@ class GBCPlot: NSObject, CPTPlotDataSource{
             if let location = locationIndex{
                 maxValue = maxValue + (Double(location)*0.2)
             }
-            ViewController.updateMaxValueForPlotWithIdentifier(plot.identifier as! String, newValue: maxValue)            
+            if let graphCont = graphContainer{
+                graphCont.updateMaxValueForPlotWithIdentifier(plot.identifier as! String, newValue: maxValue)
+            }
         }
     }
     

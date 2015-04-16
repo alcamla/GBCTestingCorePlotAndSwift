@@ -1,8 +1,8 @@
 //
-//  ViewController.swift
+//  PlotsViewController.swift
 //  GBCTestingCorePlotAndSwift
 //
-//  Created by camacholaverde on 4/1/15.
+//  Created by camacholaverde on 4/13/15.
 //  Copyright (c) 2015 gibicgroup. All rights reserved.
 //
 
@@ -10,15 +10,7 @@ import UIKit
 import QuartzCore
 
 
-let kMaxDataPoints = 52
-let kFrameRate = 5.0 //Frames per second
-let kAlpha = 0.25 //Smoothing constant
-let kPlotIdentifier = "RealTimePlot"
-let kPlotTitle = "Real Time Plot"
-
-class ViewController: UIViewController, CPTGraphContainer {
-    
-    // MARK: - Properties
+class PlotsViewController: UIViewController, CPTGraphContainer {
     
     // A Timer to update the plot's data
     private var dataTimer:NSTimer? = nil
@@ -30,15 +22,16 @@ class ViewController: UIViewController, CPTGraphContainer {
     var yRange  = CPTPlotRange(location: 0.0, length: 1.0)
     
     // The plots
-    private var plotsArray:[GBCPlot] = [GBCPlot]() {
+    private var plotsArray:[realTimeStaticPlot] = [realTimeStaticPlot]() {
         willSet{
-            if let newPlot = newValue.last as GBCPlot!{
-                realTimeScatterGraph!.addPlot(newPlot.plot)
+            if let newPlot = newValue.last as realTimeStaticPlot!{
+                realTimeScatterGraph!.addPlot(newPlot.subPlotsContainers[0].plot)
+                realTimeScatterGraph!.addPlot(newPlot.subPlotsContainers[1].plot)
                 //Asign the location property
-                newPlot.locationIndex = newValue.count-1
+                //newPlot.locationIndex = newValue.count-1
                 //Assign the maxValue to MaxValues
-                SimulationProperties.maxValues[newPlot.plot.identifier as! String] = newPlot.maxValue
-                SimulationProperties.minValues[newPlot.plot.identifier as! String] = newPlot.minValue
+                SimulationProperties.maxValues[newPlot.identifier] = newPlot.maxValue
+                SimulationProperties.minValues[newPlot.identifier] = newPlot.minValue
                 newPlot.graphContainer = self
             }
             
@@ -46,16 +39,39 @@ class ViewController: UIViewController, CPTGraphContainer {
     }
     
     // The index of the simulation
-     struct SimulationProperties
+    struct SimulationProperties
     {
         static var index: Int = 0
         static var maxValue: Double = 0
         static var minValue: Double = 0
         static var maxValues:Dictionary = [String:Double]()
         static var minValues:Dictionary = [String:Double]()
+        static var samplingFrequency:Double = 50.0
+        static var visualizingTime:Double = 10.0
+        static var frequencyDownscaleFactor:Int = 5
     }
     
-
+    var samplingFrequency:Double{
+        return SimulationProperties.samplingFrequency
+    }
+    
+    var visualizingTime:Double{
+        return SimulationProperties.visualizingTime
+    }
+    
+    var plotDataSize:Int{
+        return Int((samplingFrequency * visualizingTime) + 1)
+    }
+    
+    var samplesPerFrame:Int{
+        return SimulationProperties.frequencyDownscaleFactor
+    }
+    
+    var frameRate:Double{
+        //Verify if the relation can be hold. The sampling frequency must be a multiple of the frame rate
+        assert(Int(samplingFrequency)%SimulationProperties.frequencyDownscaleFactor == 0, "Not a valid downscale factor")
+        return samplingFrequency/Double(SimulationProperties.frequencyDownscaleFactor)
+    }
     
     // MARK:- Initialization
     
@@ -132,7 +148,7 @@ class ViewController: UIViewController, CPTGraphContainer {
         let yAxis = axisSet.yAxis
         yAxis.labelingPolicy = .Automatic
         yAxis.orthogonalPosition = 0.0
-    
+        
         yAxis.majorGridLineStyle = majorGridLineStyle
         yAxis.minorGridLineStyle = minorGridLineStyle
         yAxis.minorTicksPerInterval = 3
@@ -144,31 +160,49 @@ class ViewController: UIViewController, CPTGraphContainer {
         // Set the plots to the graph
         
         // First plot
-        let plotLineStyle = CPTMutableLineStyle()
+        var plotLineStyle = CPTMutableLineStyle()
         plotLineStyle.lineWidth = 3.0
         plotLineStyle.lineColor = CPTColor.greenColor()
-        let firstPlot = GBCPlot(identifier: kPlotIdentifier, lineStyle: plotLineStyle)
-        plotsArray.append(firstPlot)
+        var  plot = realTimeStaticPlot(identifier: kPlotIdentifier, lineStyle: plotLineStyle)
+        plotsArray.append(plot)
         
         // Second plot
         plotLineStyle.lineWidth = 3.0
         plotLineStyle.lineColor = CPTColor.redColor()
-        let secondPlot = GBCPlot(identifier: "SecondIdentifier", lineStyle: plotLineStyle)
-        plotsArray.append(secondPlot)
+        plot = realTimeStaticPlot(identifier: "SecondPlot", lineStyle: plotLineStyle)
+        plotsArray.append(plot)
         
         // Third plot
         plotLineStyle.lineWidth = 3.0
-        plotLineStyle.lineColor = CPTColor.blueColor()
-        let thirdPlot = GBCPlot(identifier: "ThirdIdentifier", lineStyle: plotLineStyle)
-        plotsArray.append(thirdPlot)
-
+        plotLineStyle.lineColor = CPTColor.grayColor()
+        plot = realTimeStaticPlot(identifier: "ThirdPlot", lineStyle: plotLineStyle)
+        plotsArray.append(plot)
+        
+        // First plot
+        plotLineStyle.lineWidth = 3.0
+        plotLineStyle.lineColor = CPTColor.blackColor()
+        plot = realTimeStaticPlot(identifier: "SixthPlot", lineStyle: plotLineStyle)
+        plotsArray.append(plot)
+        
+        // Second plot
+        plotLineStyle.lineWidth = 3.0
+        plotLineStyle.lineColor = CPTColor.brownColor()
+        plot = realTimeStaticPlot(identifier: "FourthPlot", lineStyle: plotLineStyle)
+        plotsArray.append(plot)
+        
+        // Third plot
+        plotLineStyle.lineWidth = 3.0
+        plotLineStyle.lineColor = CPTColor.magentaColor()
+        plot = realTimeStaticPlot(identifier: "FifthPlot", lineStyle: plotLineStyle)
+        plotsArray.append(plot)
+        
         // Plot Space
         let plotSpace = realTimeScatterGraph!.defaultPlotSpace as! CPTXYPlotSpace
-        plotSpace.xRange = CPTPlotRange(location: 0.0, length: (200 - 2))
+        plotSpace.xRange = CPTPlotRange(location: 0.0, length: (plotDataSize - 1))
         plotSpace.yRange = yRange
         
         // Set up the animation
-        dataTimer = NSTimer(timeInterval: 1.0/kFrameRate, target: self, selector: Selector("newData:"), userInfo: nil, repeats: true)
+        dataTimer = NSTimer(timeInterval: 1.0/frameRate, target: self, selector: Selector("newData:"), userInfo: nil, repeats: true)
         NSRunLoop.mainRunLoop().addTimer(self.dataTimer!, forMode: NSRunLoopCommonModes)
         generateData()
     }
@@ -185,12 +219,7 @@ class ViewController: UIViewController, CPTGraphContainer {
         let plotSpace = theGraph.defaultPlotSpace as CPTPlotSpace
         
         // Update Ranges
-        // X
-        let location = (SimulationProperties.index >= kMaxDataPoints ? (SimulationProperties.index - kMaxDataPoints + 2): 0)
-        let oldRange = CPTPlotRange(location: (location > 0 ? (location - 1) : 0) , length: kMaxDataPoints-2)
-        let newRange = CPTPlotRange(location: location, length: (kMaxDataPoints-2))
-        CPTAnimation.animate(plotSpace, property: "xRange", fromPlotRange: oldRange, toPlotRange: newRange, duration: CGFloat(1.0/kFrameRate))
-        
+        // In this version, the x range does not need to be updated
         // Y
         // Find the max and min between all plots
         let mins = Array(SimulationProperties.minValues.values)
@@ -205,7 +234,7 @@ class ViewController: UIViewController, CPTGraphContainer {
         if  (yRange.location as Double > globalMin) || realRangeLength != yRange.location{
             let oldRange = yRange
             yRange = CPTPlotRange(location: globalMin, length: realRangeLength)
-            CPTAnimation.animate(plotSpace, property: "yRange", fromPlotRange: oldRange, toPlotRange: yRange, duration: CGFloat(1.0/kFrameRate))
+            //CPTAnimation.animate(plotSpace, property: "yRange", fromPlotRange: oldRange, toPlotRange: yRange, duration: CGFloat(1.0/kFrameRate))
         }
         
         SimulationProperties.index++
@@ -239,17 +268,4 @@ class ViewController: UIViewController, CPTGraphContainer {
     func updateMinValueForPlotWithIdentifier(identifier:String, newValue:Double){
         SimulationProperties.minValues.updateValue(newValue, forKey: identifier)
     }
-    
-    var samplingFrequency:Double = 5.0 //In hertz
-    var visualizingTime:Double = 10.0
-    var plotDataSize = 500
-    var samplesPerFrame = 5
 }
-
-
-
-
-
-
-
-
