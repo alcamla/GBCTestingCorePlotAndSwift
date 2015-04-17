@@ -12,19 +12,19 @@ class realTimeStaticPlot: NSObject, RealTimeSubPlotContainer {
     
     // MARK: - Properties
     
-    //Stores the objects that contain the subplots
+    // Stores the objects that contain the subplots
     var subPlotsContainers:[realTimeStaticSubPlot] = [realTimeStaticSubPlot]()
     
-    //The graphContainer
+    // The graphContainer
     var graphContainer:CPTGraphContainer?
     
-    //The plotIdentifier
+    // The plotIdentifier
     let identifier:String!
     
-    //Current active subplot
+    // Current active subplot
     var activeSubPlotContainerIndex = 0;
     
-    //Max value of the plot
+    // Max value of the plot
     var maxValue:Double = 0
     
     // Min value of the plot
@@ -33,17 +33,28 @@ class realTimeStaticPlot: NSObject, RealTimeSubPlotContainer {
     // Location of the plot in the graph
     var locationIndex:Int = 0
     
-    //
+    // The number of dataPoints for the plot and its subplots
     var plotDataSize:Int{
         return graphContainer?.plotDataSize ?? 0
     }
     
+    // Number of samples inserted on each timer interruption
     var samplesPerFrame:Int{
         return graphContainer!.samplesPerFrame
     }
     
+    // Required to supply the values for the X axis in the subplots
+    var samplingFrequency:Int {
+        return Int(graphContainer!.samplingFrequency)
+    }
+    
     // Stores the last value added to the plot
     var lastValue:Double?
+    
+    // Standard offset between plots of the containing graph
+    var offset:Double{
+        return graphContainer?.offset ?? 0.0
+    }
     
     // MARK:  - Initializers
     
@@ -138,10 +149,16 @@ class realTimeStaticPlot: NSObject, RealTimeSubPlotContainer {
 // MARK: - Protocols
 protocol CPTGraphContainer{
     
+    // Informs the delegate that the max value of this plot has changed
     func updateMaxValueForPlotWithIdentifier(identifier:String, newValue:Double)
+    // Informs the delegate that the min value of this plot has changed
     func updateMinValueForPlotWithIdentifier(identifier:String, newValue:Double)
-    //var samplingFrequency:Double {get}
-    //var visualizingTime:Double {get}
+    // Get the Fs from the simulation
+    var samplingFrequency:Double {get}
+    // Get the number of data points that the plot should have
     var plotDataSize:Int {get}
+    // Get the number of samples inserted on each call to the refreshing function
     var samplesPerFrame:Int {get}
+    // Get the offset stablished by the container in order to draw the plot correctly
+    var offset: Double {get}
 }

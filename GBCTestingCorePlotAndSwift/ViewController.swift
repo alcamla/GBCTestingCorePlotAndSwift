@@ -244,6 +244,7 @@ class ViewController: UIViewController, CPTGraphContainer {
     var visualizingTime:Double = 10.0
     var plotDataSize = 500
     var samplesPerFrame = 5
+    var offset = 0.5
 }
 
 

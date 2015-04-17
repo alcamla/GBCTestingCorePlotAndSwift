@@ -20,12 +20,10 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
     // Integer to identify the subplot by the plotContainer
     var subPlotIndex :Int?
     
-    //
-    
-    //The plotContainer
+    // The plotContainer
     var plotContainer:RealTimeSubPlotContainer?
     
-    //The insertion flag
+    // The insertion flag
     var isArrayBlockedForAppendings = true
     
     // The data
@@ -55,10 +53,9 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
                     }
                     
                     // Remove the first samples of the plot
-                    //At first, remove 2 times the number of samples inserted per frame
+                    // At first, remove 2 times the number of samples inserted per frame
                     // Store the values to be removed.
                     let numberOfSamplesToRemove = plotContainer!.samplesPerFrame * 2
-                    //let numberOfSamplesToRemove = Int(Double(plotContainer!.plotDataSize)*0.1)
                     let dataPoints = Array(plotData[0..<numberOfSamplesToRemove])
                     var dataValues = [Double]()
                     for dataPoint in dataPoints{
@@ -120,8 +117,6 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
                     ViewController.SimulationProperties.minValue = dataValue
                 }
             }
-
-            
         }
     }
     
@@ -164,6 +159,7 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
         // Create the Plot
         plot = CPTScatterPlot(frame: CGRectZero)
         plot.cachePrecision = .Double
+        plot.interpolation = .Curved
         
         // Set the lineStyle for the plot
         let plotLineStyle = plot.dataLineStyle.mutableCopy() as! CPTMutableLineStyle
@@ -239,7 +235,6 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
     func removeDataPointsFromPlot(numberOfDataPoints:Int) -> Bool{
         if  numberOfDataPoints <= plotData.count{
             plotData.removeRange(Range(start: 0, end: numberOfDataPoints))
-            //plotData.removeLast()
             return true
         }
         return false
@@ -255,7 +250,7 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
         
         switch CPTScatterPlotField(rawValue: Int(fieldEnum))! {
         case .X:
-            let num = plotData[Int(idx)].index
+            let num = Double(plotData[Int(idx)].index)/Double(plotContainer!.samplingFrequency)
             return num as NSNumber
             
         case .Y:
@@ -263,7 +258,13 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
             var dataValue = dataPoint.value
             // Consider the possible offset to correctly visualize the plots in the graph
             if let location = plotContainer?.locationIndex{
-                dataValue = dataValue + (Double(location)*0.2)
+                if let offset = plotContainer?.offset{
+                    dataValue = dataValue + (Double(location + 1)*offset)
+                    
+                } else{
+                    dataValue = dataValue + (Double(location)*0.2)
+                }
+               
             }
             return dataValue as NSNumber
             
@@ -273,13 +274,23 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
     }
 }
 
+// MARK: - Protocols
 protocol RealTimeSubPlotContainer{
-    
+    // Informs the plotContainer that the max value of this segment changed
     func updateMaxValueForPlotSegmentWithIdentifier(identifier:String, newValue:Double)
+    // Informs the plotContainer that the min value of this segment changed
     func updateMinValueForPlotSegmentWithIdentifier(identifier:String, newValue:Double)
+    // Informns the plotContainer that no more data can be added to the plot
     func plotStackIsFull(subPlot:realTimeStaticSubPlot)
+    // Get the location of the plot for drawing purposes
     var locationIndex:Int {get}
+    // Geth the number of data points
     var plotDataSize:Int {get}
+    // Get the number of samples inserted on each iterruption
     var samplesPerFrame:Int {get}
+    // Get the sampling frequency for drawing
+    var samplingFrequency:Int {get}
+    // Get the plot offset, for drawing
+    var offset:Double {get}
     
 }
