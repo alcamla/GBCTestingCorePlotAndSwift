@@ -14,19 +14,19 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
     
     //MARK: -  Properties
     
-    // The CPTPlot
+    /// The CPTPlot
     var plot:CPTScatterPlot
     
-    // Integer to identify the subplot by the plotContainer
+    /// Integer to identify the subplot by the plotContainer
     var subPlotIndex :Int?
     
-    // The plotContainer
+    /// The plotContainer
     var plotContainer:RealTimeSubPlotContainer?
     
-    // The insertion flag
+    /// The insertion flag
     var isArrayBlockedForAppendings = true
     
-    // The data
+    /// The data
     var plotData = [DataPoint](){
         didSet{
             
@@ -120,16 +120,16 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
         }
     }
     
-    // Structure that represents a dataPoint for the plot
+    /// Structure that represents a dataPoint for the plot
     struct DataPoint {
         var index=0
         var value=0.0
     }
     
-    // Index of the next dataPoint, in relation to the graph
+    /// Index of the next dataPoint, in relation to the graph
     var currentIndex = 0
 
-    // Stores the minimum value being plotted
+    /// Stores the minimum value being plotted
     var minValue: Double = 0 {
         didSet{
             if let location = plotContainer?.locationIndex{
@@ -141,7 +141,7 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
         }
     }
     
-    // Stores the max value being plotted
+    /// Stores the max value being plotted
     var maxValue: Double = 0{
         didSet{
             if let location = plotContainer?.locationIndex{
@@ -188,7 +188,11 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
     
     // MARK: - Methods
     
-    /**Indicates if a new min o new max must be calculated after deleting a range of data from the plot */
+    /**
+    
+        Indicates if a new min o new max must be calculated after deleting a range of data from the plot
+    
+    */
     func requiresMinMaxUpdate(valuesToDelete:[Double]) -> (updateMin:Bool, updateMax:Bool){
         var mustUpdate = (updateMin:false, updateMax:false)
         for value in valuesToDelete{
@@ -215,7 +219,11 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
         return mustUpdate
     }
     
-    /** Adds the received  data values to plot*/
+    /**
+    
+        Adds the received  data values to plot
+    
+    */
     func addDataPointsToPlot(values:[Double])-> Int?{
         //Check if the value can be added
         var newDataPoint:DataPoint
@@ -231,13 +239,30 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
         return nil
     }
     
-    /** Removes the indicated number of dataPoints from the plots. FIFO */
+    /** 
+    
+        Removes the indicated number of dataPoints from the plots. FIFO 
+    
+    */
     func removeDataPointsFromPlot(numberOfDataPoints:Int) -> Bool{
         if  numberOfDataPoints <= plotData.count{
             plotData.removeRange(Range(start: 0, end: numberOfDataPoints))
             return true
         }
         return false
+    }
+    
+    /**
+    
+        Clears all data from the plotData array
+    
+    */
+    func clearPlot(){
+        
+        plotData.removeAll(keepCapacity: true)
+        isArrayBlockedForAppendings = true
+        currentIndex = 0
+        
     }
     
     // MARK: - PlotDataSource protocol conformance

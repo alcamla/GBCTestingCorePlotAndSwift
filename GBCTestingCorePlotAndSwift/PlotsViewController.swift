@@ -25,28 +25,33 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
     // The plots
     private var plotsArray:[realTimeStaticPlot] = [realTimeStaticPlot]() {
         willSet{
-            if let newPlot = newValue.last as realTimeStaticPlot!{
-                // Add the subplots contained in the new  realTimeStaticPlot
-                for subPlotContainer in newPlot.subPlotsContainers{
-                    realTimeScatterGraph!.addPlot(subPlotContainer.plot)
+            // Check if the number of plots has incremented.
+            let deltaPlots = newValue.count - plotsArray.count
+            if deltaPlots > 0{
+                // A new plot has been added
+                if let newPlot = newValue.last as realTimeStaticPlot!{
+                    // Add the subplots contained in the new  realTimeStaticPlot
+                    for subPlotContainer in newPlot.subPlotsContainers{
+                        realTimeScatterGraph!.addPlot(subPlotContainer.plot)
+                    }
+                    // Asign the location property
+                    newPlot.locationIndex = newValue.count-1
+                    // Assign the maxValue to MaxValues
+                    SimulationProperties.maxValues[newPlot.identifier] = newPlot.maxValue
+                    SimulationProperties.minValues[newPlot.identifier] = newPlot.minValue
+                    newPlot.graphContainer = self
+                    // Insert the new yLabel
+                    let newLabel = CPTAxisLabel(text: newPlot.identifier, textStyle: yAx.labelTextStyle)
+                    newLabel.tickLocation = newPlot.locationIndex + 1
+                    newLabel.offset       = yAx.labelOffset + yAx.majorTickLength
+                    yLabels.insert(newLabel)
+                    let axisSet = realTimeScatterGraph?.axisSet as! CPTXYAxisSet
+                    axisSet.yAxis.axisLabels = yLabels
+                    // Insert a new tick horizontal mark to split the plots a bit visually
+                    let location = CGFloat(Double(newValue.count) * offset)
+                    yTickLinesLocations.insert(location)
+                    axisSet.yAxis.majorTickLocations = yTickLinesLocations
                 }
-                // Asign the location property
-                newPlot.locationIndex = newValue.count-1
-                // Assign the maxValue to MaxValues
-                SimulationProperties.maxValues[newPlot.identifier] = newPlot.maxValue
-                SimulationProperties.minValues[newPlot.identifier] = newPlot.minValue
-                newPlot.graphContainer = self
-                // Insert the new yLabel
-                let newLabel = CPTAxisLabel(text: newPlot.identifier, textStyle: yAx.labelTextStyle)
-                newLabel.tickLocation = newPlot.locationIndex + 1
-                newLabel.offset       = yAx.labelOffset + yAx.majorTickLength
-                yLabels.insert(newLabel)
-                let axisSet = realTimeScatterGraph?.axisSet as! CPTXYAxisSet
-                axisSet.yAxis.axisLabels = yLabels
-                // Insert a new tick horizontal mark to split the plots a bit visually
-                let location = CGFloat(Double(newValue.count) * offset)
-                yTickLinesLocations.insert(location)
-                axisSet.yAxis.majorTickLocations = yTickLinesLocations
             }
         }
     }
@@ -115,9 +120,12 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        graphConfiguration()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    
+    
+    func graphConfiguration(){
         
         // Graph
         let newGraph = CPTXYGraph(frame: CGRectZero)
@@ -142,7 +150,7 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         newGraph.paddingRight  = 0.0
         newGraph.paddingTop    = 0.0
         newGraph.paddingBottom = 0.0
-    
+        
         newGraph.plotAreaFrame.paddingTop    = 15.0
         newGraph.plotAreaFrame.paddingRight  = 15.0
         newGraph.plotAreaFrame.paddingLeft   = 55.0
@@ -151,7 +159,7 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         
         //Asign to property
         realTimeScatterGraph = newGraph
-
+        
         // Axis
         
         // X
@@ -262,6 +270,17 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         dataTimer = NSTimer(timeInterval: 1.0/frameRate, target: self, selector: Selector("newData:"), userInfo: nil, repeats: true)
         NSRunLoop.mainRunLoop().addTimer(self.dataTimer!, forMode: NSRunLoopCommonModes)
         generateData()
+        
+        // Set up a timer to delete some data
+        let removalTimer = NSTimer(timeInterval: 5.2, target: self, selector: Selector("deletePlotTimer:"), userInfo: nil, repeats: false)
+        NSRunLoop.mainRunLoop().addTimer(removalTimer, forMode: NSRunLoopCommonModes)
+        
+    }
+    
+    
+    override func viewDidAppear(animated: Bool) {
+        
+        
     }
     
     // MARK: - Plot Methods
@@ -269,7 +288,12 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
     func generateData(){
         SimulationProperties.index = 0
     }
+    /**
+        Adds new data to the visible plots of the graph
+        
+        :param: theTimer NSTimer that triggers the interruption
     
+    */
     func newData(theTimer:NSTimer){
         
         let theGraph = realTimeScatterGraph!
@@ -315,6 +339,65 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         }
         return titleSize
     }
+    
+    func deletePlotTimer(theTimer: NSTimer){
+        if theTimer.timeInterval < 10.0 {
+            //Remove the plot with identifier T4
+            removePlotWithIdentifier("Fz")
+        }
+    }
+    
+    /**
+        Removes a plot with the given identifier, if its part of the plotsArray
+    
+        :param: identifier: String that identifies the plot
+    
+    */
+    func removePlotWithIdentifier(identifier:String){
+        var index = 0
+        var indexToRemove:Int!
+        for plot in plotsArray{
+            if plot.identifier == identifier{
+                // Remove the plot from the array
+                removePlotAtIndex(index)
+                break
+            }
+            index++
+        }
+        //Clear all plots
+        clearPlots()
+    }
+    
+    /**
+        Removes the plot at the given index.
+    
+        :param: identifier: String that identifies the plot
+    
+    */
+    func removePlotAtIndex(indexToRemove:Int){
+        // Get the current number of plots
+        var lastIndex = plotsArray.count - 1
+        for index in indexToRemove ... lastIndex {
+            plotsArray[index].locationIndex = --plotsArray[index].locationIndex
+        }
+        let plotContainer = plotsArray.removeAtIndex(indexToRemove)
+        // Remove the plots from the graph
+        for subPlotContainer in plotContainer.subPlotsContainers {
+            realTimeScatterGraph!.removePlot(subPlotContainer.plot)
+        }
+    }
+    
+    /**
+        Clears  all the dataPoints of the plots  in the graph.
+    
+    */
+    func clearPlots(){
+        
+        for plotContainer in plotsArray{
+            plotContainer.clearPlotData()
+        }
+    }
+    
     
     // MARK: - CPTGraphContainer protocol conformance
     

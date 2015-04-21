@@ -12,46 +12,46 @@ class realTimeStaticPlot: NSObject, RealTimeSubPlotContainer {
     
     // MARK: - Properties
     
-    // Stores the objects that contain the subplots
+    /// Stores the objects that contain the subplots
     var subPlotsContainers:[realTimeStaticSubPlot] = [realTimeStaticSubPlot]()
     
-    // The graphContainer
+    /// The graphContainer
     var graphContainer:CPTGraphContainer?
     
-    // The plotIdentifier
+    /// The plotIdentifier
     let identifier:String!
     
-    // Current active subplot
+    /// Current active subplot
     var activeSubPlotContainerIndex = 0;
     
-    // Max value of the plot
+    /// Max value of the plot
     var maxValue:Double = 0
     
-    // Min value of the plot
+    /// Min value of the plot
     var minValue:Double = 0
     
-    // Location of the plot in the graph
+    /// Location of the plot in the graph
     var locationIndex:Int = 0
     
-    // The number of dataPoints for the plot and its subplots
+    /// The number of dataPoints for the plot and its subplots
     var plotDataSize:Int{
         return graphContainer?.plotDataSize ?? 0
     }
     
-    // Number of samples inserted on each timer interruption
+    /// Number of samples inserted on each timer interruption
     var samplesPerFrame:Int{
         return graphContainer!.samplesPerFrame
     }
     
-    // Required to supply the values for the X axis in the subplots
+    /// Required to supply the values for the X axis in the subplots
     var samplingFrequency:Int {
         return Int(graphContainer!.samplingFrequency)
     }
     
-    // Stores the last value added to the plot
+    /// Stores the last value added to the plot
     var lastValue:Double?
     
-    // Standard offset between plots of the containing graph
+    /// Standard offset between plots of the containing graph
     var offset:Double{
         return graphContainer?.offset ?? 0.0
     }
@@ -84,7 +84,11 @@ class realTimeStaticPlot: NSObject, RealTimeSubPlotContainer {
     
     // MARK: - Methods
     
-    /** Adds new Data to plot. The new value to add  is calculated by the method itself */
+    /**
+    
+    Adds new Data to plot. The new value to add  is calculated by the method itself 
+    
+    */
     func addDataToPlot(){
         
         // Identify the roles of each subplotContainer
@@ -113,7 +117,23 @@ class realTimeStaticPlot: NSObject, RealTimeSubPlotContainer {
         }
     }
     
-    //MARK: - RealTimeSubPlotContainer protocol conformance
+    /**
+    
+        This method removes all data points from plot. However, the simulation keeps going from the same point, 
+        doing a clearing of the graph
+    
+    */
+    func clearPlotData(){
+        
+        // Must reset all data of subPlots
+        for subPlotContainer in subPlotsContainers{
+            subPlotContainer.clearPlot()
+        }
+        subPlotsContainers[0].isArrayBlockedForAppendings = false        
+        
+    }
+    
+    // MARK: - RealTimeSubPlotContainer protocol conformance
     
     func updateMaxValueForPlotSegmentWithIdentifier(identifier:String, newValue:Double){
         if newValue > maxValue{
