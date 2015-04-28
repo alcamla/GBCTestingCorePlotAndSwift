@@ -21,6 +21,7 @@
 		6CA8F3ED1ACCA75A001C89DC /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CA8F3EA1ACCA673001C89DC /* libCorePlot-CocoaTouch.a */; };
 		6CA8F3EF1ACCA805001C89DC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CA8F3EE1ACCA805001C89DC /* QuartzCore.framework */; };
 		6CA8F3F11ACCA80B001C89DC /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CA8F3F01ACCA80B001C89DC /* Accelerate.framework */; };
+		6CA9F5371AEF0B70004F239B /* EEGModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA9F5361AEF0B6F004F239B /* EEGModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,6 +95,7 @@
 		6CA8F3D51ACCA672001C89DC /* CorePlot.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CorePlot.xcodeproj; path = "../../../repos/core-plot/framework/CorePlot.xcodeproj"; sourceTree = "<group>"; };
 		6CA8F3EE1ACCA805001C89DC /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		6CA8F3F01ACCA80B001C89DC /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		6CA9F5361AEF0B6F004F239B /* EEGModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EEGModel.swift; path = ../EEGModel.swift; sourceTree = "<group>"; };
 		6CFD12411ACCAF8100CE3961 /* TestingCorePlotAndSwift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TestingCorePlotAndSwift-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -118,6 +120,42 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6C0E28561AEFBAE30064053F /* viewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				6C47F9521ADC313A0075C411 /* PlotsViewController.swift */,
+				6CA8F3B71ACC980D001C89DC /* ViewController.swift */,
+			);
+			name = viewControllers;
+			sourceTree = "<group>";
+		};
+		6C0E28571AEFBB110064053F /* Plots */ = {
+			isa = PBXGroup;
+			children = (
+				6C8F3FB41AD4AB37006576CF /* GBCPlot.swift */,
+				6C47F9451ADBFBDA0075C411 /* realTimeStaticPlot.swift */,
+				6C47F9501ADC077E0075C411 /* realTimeStaticSubPlot.swift */,
+			);
+			name = Plots;
+			sourceTree = "<group>";
+		};
+		6C0E28581AEFBB980064053F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				6CA9F5361AEF0B6F004F239B /* EEGModel.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		6C0E28591AEFBBAD0064053F /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				6CA8F3BE1ACC980D001C89DC /* LaunchScreen.xib */,
+				6CA8F3B91ACC980D001C89DC /* Main.storyboard */,
+			);
+			name = Storyboards;
+			sourceTree = "<group>";
+		};
 		6CA8F3A41ACC980D001C89DC = {
 			isa = PBXGroup;
 			children = (
@@ -142,16 +180,13 @@
 		6CA8F3AF1ACC980D001C89DC /* GBCTestingCorePlotAndSwift */ = {
 			isa = PBXGroup;
 			children = (
-				6CFD12401ACCAF1800CE3961 /* Other Sources */,
-				6C8F3FB41AD4AB37006576CF /* GBCPlot.swift */,
-				6C47F9451ADBFBDA0075C411 /* realTimeStaticPlot.swift */,
-				6C47F9501ADC077E0075C411 /* realTimeStaticSubPlot.swift */,
+				6C0E28591AEFBBAD0064053F /* Storyboards */,
+				6C0E28581AEFBB980064053F /* Model */,
+				6C0E28571AEFBB110064053F /* Plots */,
+				6C0E28561AEFBAE30064053F /* viewControllers */,
 				6CA8F3B21ACC980D001C89DC /* AppDelegate.swift */,
-				6CA8F3B71ACC980D001C89DC /* ViewController.swift */,
-				6C47F9521ADC313A0075C411 /* PlotsViewController.swift */,
-				6CA8F3B91ACC980D001C89DC /* Main.storyboard */,
+				6CFD12401ACCAF1800CE3961 /* Other Sources */,
 				6CA8F3BC1ACC980D001C89DC /* Images.xcassets */,
-				6CA8F3BE1ACC980D001C89DC /* LaunchScreen.xib */,
 				6CA8F3B41ACC980D001C89DC /* GBCTestingCorePlotAndSwift.xcdatamodeld */,
 				6CA8F3B01ACC980D001C89DC /* Supporting Files */,
 			);
@@ -358,6 +393,7 @@
 				6CA8F3B81ACC980D001C89DC /* ViewController.swift in Sources */,
 				6C47F9461ADBFBDA0075C411 /* realTimeStaticPlot.swift in Sources */,
 				6CA8F3B31ACC980D001C89DC /* AppDelegate.swift in Sources */,
+				6CA9F5371AEF0B70004F239B /* EEGModel.swift in Sources */,
 				6C47F9531ADC313A0075C411 /* PlotsViewController.swift in Sources */,
 				6CA8F3B61ACC980D001C89DC /* GBCTestingCorePlotAndSwift.xcdatamodeld in Sources */,
 				6C47F9511ADC077E0075C411 /* realTimeStaticSubPlot.swift in Sources */,

@@ -129,8 +129,9 @@ class realTimeStaticPlot: NSObject, RealTimeSubPlotContainer {
         for subPlotContainer in subPlotsContainers{
             subPlotContainer.clearPlot()
         }
-        subPlotsContainers[0].isArrayBlockedForAppendings = false        
-        
+        // Reset the active plots to its initial state
+        subPlotsContainers[0].isArrayBlockedForAppendings = false
+        activeSubPlotContainerIndex = 0        
     }
     
     // MARK: - RealTimeSubPlotContainer protocol conformance
@@ -165,6 +166,7 @@ class realTimeStaticPlot: NSObject, RealTimeSubPlotContainer {
         }
     }
 }
+
 
 // MARK: - Protocols
 protocol CPTGraphContainer{

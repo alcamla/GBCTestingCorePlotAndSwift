@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import QuartzCore
 
 
 let kMaxDataPoints = 52

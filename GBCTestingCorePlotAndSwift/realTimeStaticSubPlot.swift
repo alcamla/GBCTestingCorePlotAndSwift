@@ -284,7 +284,7 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
             // Consider the possible offset to correctly visualize the plots in the graph
             if let location = plotContainer?.locationIndex{
                 if let offset = plotContainer?.offset{
-                    dataValue = dataValue + (Double(location + 1)*offset)
+                    dataValue = dataValue + (Double(location)*offset)
                     
                 } else{
                     dataValue = dataValue + (Double(location)*0.2)

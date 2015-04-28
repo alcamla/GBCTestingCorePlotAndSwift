@@ -7,22 +7,21 @@
 //
 
 import UIKit
-import QuartzCore
 
 class PlotsViewController: UIViewController, CPTGraphContainer {
     
-    // A Timer to update the plot's data
+    /// A Timer to update the plot's data
     private var dataTimer:NSTimer? = nil
     
-    // The Graph
+    /// The Graph
     private var realTimeScatterGraph: CPTXYGraph? = nil
     
-    // The range on the Y axis
+    /// The range on the Y axis
     var yRange  = CPTPlotRange(location: 0.0, length: 16.0)
     
     var yAx:CPTXYAxis! = nil
     
-    // The plots
+    /// The plots
     private var plotsArray:[realTimeStaticPlot] = [realTimeStaticPlot]() {
         willSet{
             // Check if the number of plots has incremented.
@@ -41,22 +40,17 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
                     SimulationProperties.minValues[newPlot.identifier] = newPlot.minValue
                     newPlot.graphContainer = self
                     // Insert the new yLabel
-                    let newLabel = CPTAxisLabel(text: newPlot.identifier, textStyle: yAx.labelTextStyle)
-                    newLabel.tickLocation = newPlot.locationIndex + 1
-                    newLabel.offset       = yAx.labelOffset + yAx.majorTickLength
-                    yLabels.insert(newLabel)
-                    let axisSet = realTimeScatterGraph?.axisSet as! CPTXYAxisSet
-                    axisSet.yAxis.axisLabels = yLabels
-                    // Insert a new tick horizontal mark to split the plots a bit visually
-                    let location = CGFloat(Double(newValue.count) * offset)
-                    yTickLinesLocations.insert(location)
-                    axisSet.yAxis.majorTickLocations = yTickLinesLocations
+                    insertLabelWithText(newPlot.identifier, atLocation: newPlot.locationIndex)
                 }
             }
         }
+        didSet{
+            // Update the vertical range of the plot
+            refreshYAxis()
+        }
     }
     
-    // The index of the simulation
+    /// The index of the simulation
     struct SimulationProperties
     {
         static var index: Int = 0
@@ -76,45 +70,69 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         static var frequencyDownscaleFactor:Int = 10
         // Offset between plots included in the graph
         static var standardOffsetBetweenPlots = 1.0
+        // Space separating the last line from the top of the graph
+        static var graphVerticalPadding = 0.2
+        // Vertical offset for the labels
+        static var yLabelsVerticalOffset = 0.5
     }
     
-    // Frequency at wich the signals are sampled
+    /// Frequency at wich the signals are sampled
     var samplingFrequency:Double{
         return SimulationProperties.samplingFrequency
     }
     
-    // Time interval being visualized
+    /// Time interval being visualized
     var visualizingTime:Double{
         return SimulationProperties.visualizingTime
     }
     
-    // The number of samples of a plot that can be visualized in the graph for the visualizing time set
+    /// The number of samples of a plot that can be visualized in the graph for the visualizing time set
     var plotDataSize:Int{
         //return Int((samplingFrequency * visualizingTime) + 1)
         return Int(samplingFrequency * visualizingTime)
     }
     
-    // The number of samples inserted on each call to the newData method.
+    /// The number of samples inserted on each call to the newData method.
     var samplesPerFrame:Int{
         return SimulationProperties.frequencyDownscaleFactor
     }
     
-    // The number of interruptions per second to insert new data.
+    /// The number of interruptions per second to insert new data.
     var frameRate:Double{
         // Checking if the relation can be hold. The sampling frequency must be a multiple of the frame rate
         assert(Int(samplingFrequency)%SimulationProperties.frequencyDownscaleFactor == 0, "Not a valid downscale factor")
         return samplingFrequency/Double(SimulationProperties.frequencyDownscaleFactor)
     }
     
+    /// The offset that exists between plots
     var offset:Double{
         return SimulationProperties.standardOffsetBetweenPlots
     }
     
-    // Stores the labels for all the plots
+    /// Stores the labels for all the plots
     var yLabels = Set<CPTAxisLabel>()
     
-    // Stores the location of the horizontal lines in the graph
+    /// Stores the location of the horizontal lines in the graph
     var yTickLinesLocations = Set<CGFloat>()
+    
+    /// Stores the current device orientation
+    var orientation = AppUtilities.getDeviceOrientation(){
+        didSet{
+            // Clear the plots
+            clearPlots()
+        }
+        willSet{
+            let xRange:CPTPlotRange!
+            let plotSpace = realTimeScatterGraph!.defaultPlotSpace as! CPTXYPlotSpace
+            if (newValue == .Portrait) || (newValue == .PortraitUpsideDown){
+                SimulationProperties.visualizingTime = 5.0
+            } else {
+                SimulationProperties.visualizingTime = 10.0
+            }
+            xRange = CPTPlotRange(location: 0.0, length: visualizingTime)
+            plotSpace.xRange = xRange
+        }
+    }
     
     // MARK:- Initialization
     
@@ -122,8 +140,6 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         super.viewDidLoad()
         graphConfiguration()
     }
-    
-    
     
     func graphConfiguration(){
         
@@ -157,7 +173,7 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         newGraph.plotAreaFrame.paddingBottom = 55.0
         newGraph.plotAreaFrame.masksToBorder = false
         
-        //Asign to property
+        // Asign to property
         realTimeScatterGraph = newGraph
         
         // Axis
@@ -221,80 +237,62 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         //Store the label style
         yAx = yAxis
         
-        
-        // Set the plots to the graph
-        
-        // First plot
-        var plotLineStyle = CPTMutableLineStyle()
-        plotLineStyle.lineWidth = 0.5
-        plotLineStyle.lineColor = CPTColor.greenColor()
-        var  plot = realTimeStaticPlot(identifier: "Fp1", lineStyle: plotLineStyle)
-        plotsArray.append(plot)
-        
-        // Second plot
-        plotLineStyle.lineWidth = 0.5
-        plotLineStyle.lineColor = CPTColor.redColor()
-        plot = realTimeStaticPlot(identifier: "Fp2", lineStyle: plotLineStyle)
-        plotsArray.append(plot)
-        
-        // Third plot
-        plotLineStyle.lineWidth = 0.5
-        plotLineStyle.lineColor = CPTColor.grayColor()
-        plot = realTimeStaticPlot(identifier: "Cz", lineStyle: plotLineStyle)
-        plotsArray.append(plot)
-        
-        // Fourth plot
-        plotLineStyle.lineWidth = 0.5
-        plotLineStyle.lineColor = CPTColor.blackColor()
-        plot = realTimeStaticPlot(identifier: "Fz", lineStyle: plotLineStyle)
-        plotsArray.append(plot)
-        
-        // Fifth plot
-        plotLineStyle.lineWidth = 0.5
-        plotLineStyle.lineColor = CPTColor.brownColor()
-        plot = realTimeStaticPlot(identifier: "C3", lineStyle: plotLineStyle)
-        plotsArray.append(plot)
-        
-        // Sixth plot
-        plotLineStyle.lineWidth = 0.5
-        plotLineStyle.lineColor = CPTColor.magentaColor()
-        plot = realTimeStaticPlot(identifier: "T4", lineStyle: plotLineStyle)
-        plotsArray.append(plot)
-        
         // Plot Space
         let plotSpace = realTimeScatterGraph!.defaultPlotSpace as! CPTXYPlotSpace
         plotSpace.xRange = CPTPlotRange(location: 0.0, length: visualizingTime)
         plotSpace.yRange = yRange
         
         // Set up the refreshing Timer interruption
-        dataTimer = NSTimer(timeInterval: 1.0/frameRate, target: self, selector: Selector("newData:"), userInfo: nil, repeats: true)
+        dataTimer = NSTimer(timeInterval: 1.0/frameRate, target: self, selector: Selector("insertDataToPlotsWithTimer:"), userInfo: nil, repeats: true)
         NSRunLoop.mainRunLoop().addTimer(self.dataTimer!, forMode: NSRunLoopCommonModes)
-        generateData()
+
+        /* //Some functions to test functionality and performance
         
-        // Set up a timer to delete some data
+         //Set up a timer to delete plots
         let removalTimer = NSTimer(timeInterval: 5.2, target: self, selector: Selector("deletePlotTimer:"), userInfo: nil, repeats: false)
         NSRunLoop.mainRunLoop().addTimer(removalTimer, forMode: NSRunLoopCommonModes)
         
+        // Set up a timer to add new plots
+        let insertionTimer = NSTimer(timeInterval: 7.0, target: self, selector: Selector("insertPlotsTimer:"), userInfo: nil, repeats: true)
+        NSRunLoop.mainRunLoop().addTimer(insertionTimer, forMode: NSRunLoopCommonModes)
+        */
     }
-    
     
     override func viewDidAppear(animated: Bool) {
+        // Set the plots to the graph
         
+        var plotLineStyle = CPTMutableLineStyle()
+        plotLineStyle.lineWidth = 0.5
+        var colorFuncts =  [CPTColor.grayColor, CPTColor.redColor, CPTColor.blackColor, CPTColor.brownColor, CPTColor.magentaColor, CPTColor.greenColor]
+        var identifiers = ["Fp1", "Fp2", "Cz", "Fz", "C3", "T4"]
+        for counter in 0...5 {
+            plotLineStyle.lineColor = colorFuncts[counter]()
+            addPlotWithIdentifier(identifiers[counter], andLineStyle: plotLineStyle)
+        }
         
     }
+    
+    override func viewWillLayoutSubviews() {
+        // Check if the orientation changed
+        if AppUtilities.getDeviceOrientation() != orientation {
+            orientation = AppUtilities.getDeviceOrientation()
+        }
+    }
+    
+    override func didReceiveMemoryWarning() {
+        println("Do something about this warning")
+    }
+    
     
     // MARK: - Plot Methods
-    
-    func generateData(){
-        SimulationProperties.index = 0
-    }
+
     /**
         Adds new data to the visible plots of the graph
         
         :param: theTimer NSTimer that triggers the interruption
     
     */
-    func newData(theTimer:NSTimer){
+    func insertDataToPlotsWithTimer(theTimer:NSTimer){
         
         let theGraph = realTimeScatterGraph!
         let plotSpace = theGraph.defaultPlotSpace as CPTPlotSpace
@@ -326,6 +324,20 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         }
     }
     
+    /**
+        Adds a new plotContainer and its corresponding plot to the active graph.
+    
+        :param: identifier String to identify the plot, also corresponds to the label set on the Y axis
+        :param: lineStyle CPTMutableLineStyle with which the plot will be visualized
+    */
+    func addPlotWithIdentifier(identifier:String, andLineStyle lineStyle:CPTMutableLineStyle){
+        let plot = realTimeStaticPlot(identifier: identifier, lineStyle: lineStyle)
+        plotsArray.append(plot)
+    }
+    
+    /**
+        Calculates the proper size for the graph's title
+    */
     func titleSize()->CGFloat{
         
         let titleSize:CGFloat
@@ -340,12 +352,7 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         return titleSize
     }
     
-    func deletePlotTimer(theTimer: NSTimer){
-        if theTimer.timeInterval < 10.0 {
-            //Remove the plot with identifier T4
-            removePlotWithIdentifier("Fz")
-        }
-    }
+
     
     /**
         Removes a plot with the given identifier, if its part of the plotsArray
@@ -364,8 +371,6 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
             }
             index++
         }
-        //Clear all plots
-        clearPlots()
     }
     
     /**
@@ -385,10 +390,15 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         for subPlotContainer in plotContainer.subPlotsContainers {
             realTimeScatterGraph!.removePlot(subPlotContainer.plot)
         }
+        // Given that the number of plots has changed, clear the plots
+        clearPlots()
+        // The plots labels need to be updated
+        refreshLabels()
     }
     
     /**
-        Clears  all the dataPoints of the plots  in the graph.
+        Clears  all the dataPoints of the plots  in the graph. call this method
+        when a plot has been deleted, or when the device orientation has changed.
     
     */
     func clearPlots(){
@@ -396,6 +406,87 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         for plotContainer in plotsArray{
             plotContainer.clearPlotData()
         }
+        
+    }
+    
+    /**
+        Refreshes the ylabels. This method should be called after a plot has been deleted
+    */
+    func refreshLabels(){
+        // Clear current labels and horizontal tick lines
+        let axisSet = realTimeScatterGraph?.axisSet as! CPTXYAxisSet
+        yLabels.removeAll(keepCapacity: true)
+        yTickLinesLocations.removeAll(keepCapacity: true)
+        
+        // Refresh the labels
+        for plotContainer in plotsArray{
+            let newLabel = CPTAxisLabel(text: plotContainer.identifier, textStyle: yAx.labelTextStyle)
+            newLabel.tickLocation = Double(plotContainer.locationIndex) + SimulationProperties.yLabelsVerticalOffset
+            newLabel.offset       = yAx.labelOffset + yAx.majorTickLength
+            yLabels.insert(newLabel)
+        }
+        axisSet.yAxis.axisLabels = yLabels
+        
+        // Refresh the tick lines locations
+        for lineCount in 1 ... yLabels.count{
+            let axisSet = realTimeScatterGraph?.axisSet as! CPTXYAxisSet
+            // Insert a new tick horizontal mark to split the plots a bit visually
+            let location = CGFloat(Double(lineCount) * offset)
+            yTickLinesLocations.insert(location)
+        }
+        axisSet.yAxis.majorTickLocations = yTickLinesLocations
+   
+    }
+    
+    /**
+        Updates the range in the vertical axis after the number of plots has changed.
+    */
+    func refreshYAxis(){
+        let plotSpace = realTimeScatterGraph!.defaultPlotSpace as! CPTXYPlotSpace
+        // Refreshing the vertical axis
+        let newRange = CPTPlotRange(location: 0.0, length: Double(plotsArray.count) * offset + SimulationProperties.graphVerticalPadding)
+         plotSpace.yRange = newRange
+
+    }
+    
+    /**
+        Generates a new label and tick horizontal line at the given location and with the given text
+    
+        :param: text The text for the label
+        :param: location the vertical coordinate where the label will be located
+    */
+    func insertLabelWithText(text:String, atLocation location:Int){
+        let newLabel = CPTAxisLabel(text: text, textStyle: yAx.labelTextStyle)
+        newLabel.tickLocation =  Double(location) + SimulationProperties.yLabelsVerticalOffset
+        newLabel.offset       = yAx.labelOffset + yAx.majorTickLength
+        yLabels.insert(newLabel)
+        //Set the updated labels
+        let axisSet = realTimeScatterGraph?.axisSet as! CPTXYAxisSet
+        axisSet.yAxis.axisLabels = yLabels
+        
+        // Update the tick horizontal lines
+        yTickLinesLocations.insert(CGFloat(Double(location+1) * offset))
+        axisSet.yAxis.majorTickLocations = yTickLinesLocations
+    }
+    
+    
+    // MARK: - Testing methods
+    
+    func deletePlotTimer(theTimer: NSTimer){
+        if theTimer.timeInterval < 10.0 {
+            //Remove the plot with identifier T4
+            removePlotWithIdentifier("Fz")
+        }
+    }
+    
+    func insertPlotsTimer(theTimer: NSTimer){
+        var plotLineStyle = CPTMutableLineStyle()
+        plotLineStyle.lineWidth = 0.5
+        addPlotWithIdentifier("A1", andLineStyle: plotLineStyle)
+        // Given that the number of plots has changed, clear the plots
+        clearPlots()
+        // The plots labels need to be updated
+        refreshLabels()
     }
     
     

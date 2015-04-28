@@ -43,6 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Saves changes in the application's managed object context before the application terminates.
         self.saveContext()
     }
+    
 
     // MARK: - Core Data stack
 
@@ -107,5 +108,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+}
+
+
+/**
+    Class With utility methods.
+*/
+class AppUtilities:NSObject{
+    
+    /**
+        This method was required because of a weird behaviour with the PlotsViewController class, 
+        Where there was a compilation time error associated with the UIDevice.currentDevice() call.
+    */
+    class func getDeviceOrientation() -> UIDeviceOrientation{
+        var text = ""
+        switch UIDevice.currentDevice().orientation{
+        case .Portrait:
+            text="Portrait"
+        case .PortraitUpsideDown:
+            text="PortraitUpsideDown"
+        case .LandscapeLeft:
+            text="LandscapeLeft"
+        case .LandscapeRight:
+            text="LandscapeRight"
+        default:
+            text="Another"
+        }
+        NSLog("You have moved: \(text)")
+        return UIDevice.currentDevice().orientation
+    }
 }
 
