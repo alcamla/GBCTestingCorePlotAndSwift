@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6C0E285B1AEFBE7C0064053F /* eegModels.json in Resources */ = {isa = PBXBuildFile; fileRef = 6C0E285A1AEFBE7C0064053F /* eegModels.json */; };
+		6C0E285D1AEFBF140064053F /* EEGModelsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0E285C1AEFBF140064053F /* EEGModelsManager.swift */; };
 		6C47F9461ADBFBDA0075C411 /* realTimeStaticPlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C47F9451ADBFBDA0075C411 /* realTimeStaticPlot.swift */; };
 		6C47F9511ADC077E0075C411 /* realTimeStaticSubPlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C47F9501ADC077E0075C411 /* realTimeStaticSubPlot.swift */; };
 		6C47F9531ADC313A0075C411 /* PlotsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C47F9521ADC313A0075C411 /* PlotsViewController.swift */; };
@@ -77,6 +79,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6C0E285A1AEFBE7C0064053F /* eegModels.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = eegModels.json; sourceTree = "<group>"; };
+		6C0E285C1AEFBF140064053F /* EEGModelsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EEGModelsManager.swift; sourceTree = "<group>"; };
 		6C47F9451ADBFBDA0075C411 /* realTimeStaticPlot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = realTimeStaticPlot.swift; path = ../realTimeStaticPlot.swift; sourceTree = "<group>"; };
 		6C47F9501ADC077E0075C411 /* realTimeStaticSubPlot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = realTimeStaticSubPlot.swift; sourceTree = "<group>"; };
 		6C47F9521ADC313A0075C411 /* PlotsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlotsViewController.swift; sourceTree = "<group>"; };
@@ -142,7 +146,9 @@
 		6C0E28581AEFBB980064053F /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				6C0E285A1AEFBE7C0064053F /* eegModels.json */,
 				6CA9F5361AEF0B6F004F239B /* EEGModel.swift */,
+				6C0E285C1AEFBF140064053F /* EEGModelsManager.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -373,6 +379,7 @@
 				6CA8F3BB1ACC980D001C89DC /* Main.storyboard in Resources */,
 				6CA8F3C01ACC980D001C89DC /* LaunchScreen.xib in Resources */,
 				6CA8F3BD1ACC980D001C89DC /* Images.xcassets in Resources */,
+				6C0E285B1AEFBE7C0064053F /* eegModels.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,6 +405,7 @@
 				6CA8F3B61ACC980D001C89DC /* GBCTestingCorePlotAndSwift.xcdatamodeld in Sources */,
 				6C47F9511ADC077E0075C411 /* realTimeStaticSubPlot.swift in Sources */,
 				6C8F3FB51AD4AB37006576CF /* GBCPlot.swift in Sources */,
+				6C0E285D1AEFBF140064053F /* EEGModelsManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
