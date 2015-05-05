@@ -109,6 +109,11 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         return SimulationProperties.standardOffsetBetweenPlots
     }
     
+    /// The index of the current simulation
+    var simulationIndex:Int{
+        return SimulationProperties.index
+    }
+    
     /// Stores the labels for all the plots
     var yLabels = Set<CPTAxisLabel>()
     
@@ -265,11 +270,12 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         plotLineStyle.lineWidth = 0.5
         var colorFuncts =  [CPTColor.grayColor, CPTColor.redColor, CPTColor.blackColor, CPTColor.brownColor, CPTColor.magentaColor, CPTColor.greenColor]
         var identifiers = ["Fp1", "Fp2", "Cz", "Fz", "C3", "T4"]
-        for counter in 0...5 {
+        for counter in 0...2{
+            let channel = EEGModelChannels.allValues[counter]
+            let condition = EEGModelConditions.EyesClosed
             plotLineStyle.lineColor = colorFuncts[counter]()
-            addPlotWithIdentifier(identifiers[counter], andLineStyle: plotLineStyle)
-        }
-        
+            addPlotWithIdentifier(identifiers[counter], channel: channel, condition: condition, andLineStyle: plotLineStyle)
+        }        
     }
     
     override func viewWillLayoutSubviews() {
@@ -313,15 +319,15 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         if  (yRange.location as Double > globalMin) || realRangeLength != yRange.location{
             let oldRange = yRange
             yRange = CPTPlotRange(location: globalMin, length: realRangeLength)
-            //CPTAnimation.animate(plotSpace, property: "yRange", fromPlotRange: oldRange, toPlotRange: yRange, duration: CGFloat(1.0/kFrameRate))
+            CPTAnimation.animate(plotSpace, property: "yRange", fromPlotRange: oldRange, toPlotRange: yRange, duration: CGFloat(1.0/kFrameRate))
         }
-        
-        SimulationProperties.index++
         
         //Add data to all plots
         for aPlot in plotsArray{
-            aPlot.addDataToPlot()
+            aPlot.addDataToPlot2()
         }
+        // Increment the simulation index. Keep in mind that we are adding several samples in  a single call to plot.addDataToPlot.
+        SimulationProperties.index++
     }
     
     /**
@@ -330,8 +336,8 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         :param: identifier String to identify the plot, also corresponds to the label set on the Y axis
         :param: lineStyle CPTMutableLineStyle with which the plot will be visualized
     */
-    func addPlotWithIdentifier(identifier:String, andLineStyle lineStyle:CPTMutableLineStyle){
-        let plot = realTimeStaticPlot(identifier: identifier, lineStyle: lineStyle)
+    func addPlotWithIdentifier(identifier:String, channel:EEGModelChannels, condition:EEGModelConditions, andLineStyle lineStyle:CPTMutableLineStyle){
+        let plot = realTimeStaticPlot(identifier: identifier, eegChannel:channel, eegCondition:condition, lineStyle:lineStyle)
         plotsArray.append(plot)
     }
     
@@ -482,7 +488,7 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
     func insertPlotsTimer(theTimer: NSTimer){
         var plotLineStyle = CPTMutableLineStyle()
         plotLineStyle.lineWidth = 0.5
-        addPlotWithIdentifier("A1", andLineStyle: plotLineStyle)
+        //addPlotWithIdentifier("A1", andLineStyle: plotLineStyle)
         // Given that the number of plots has changed, clear the plots
         clearPlots()
         // The plots labels need to be updated

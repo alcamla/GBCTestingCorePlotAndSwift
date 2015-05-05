@@ -244,6 +244,7 @@ class ViewController: UIViewController, CPTGraphContainer {
     var plotDataSize = 500
     var samplesPerFrame = 5
     var offset = 0.5
+    var simulationIndex = 0
 }
 
 

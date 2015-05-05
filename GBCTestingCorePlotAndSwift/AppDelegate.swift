@@ -17,7 +17,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
-        EEGModel.generate()
+        
+        /**
+        // Testing the whiteNoise generator
+        for i in 1 ... 100{
+            let whiteNoiseSample = EEGModel.whiteNoise()
+            println("\(whiteNoiseSample)")
+        }
+        */
+        
+        /*
+        //Testing the model initialization
+        let modelAsDictionary = EEGModelsManager.loadEEGModelForCondition(EEGModelConditions.EyesClosed, channel: EEGModelChannels.Cz)
+        let model = EEGModel(modelDictionary: modelAsDictionary!)
+        println("\(model)")
+        */
+        
         return true
     }
 

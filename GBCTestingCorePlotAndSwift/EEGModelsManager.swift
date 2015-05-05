@@ -25,6 +25,8 @@ enum EEGModelKeys : String {
     case Condition = "Condition"
     case WhiteNoiseCoefficient = "WhiteNoiseCoefficient"
     case Coefficients = "Coefficients"
+    
+    static let allValues =  [Channel, Condition, WhiteNoiseCoefficient, Coefficients]
 }
 
 /**
@@ -52,6 +54,7 @@ enum EEGModelChannels : String {
     case F8  = "F8"
     case F4  = "F4"
     case Cz  = "Cz"
+    static let allValues =  [Fp2, Fz, Fpz, Fp1, F3, F7]
     
     // Returns the number of the given channel in the original register system.
     func channelNumber()->Int{
