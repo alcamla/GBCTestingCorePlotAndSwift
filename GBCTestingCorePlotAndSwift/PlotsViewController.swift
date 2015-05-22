@@ -324,7 +324,10 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         
         //Add data to all plots
         for aPlot in plotsArray{
-            aPlot.addDataToPlot2()
+            if let eegPlot = aPlot as? EEGRealTimeStaticPlot{
+                eegPlot.addDataToPlot2()
+            }
+            
         }
         // Increment the simulation index. Keep in mind that we are adding several samples in  a single call to plot.addDataToPlot.
         SimulationProperties.index++
@@ -337,7 +340,7 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         :param: lineStyle CPTMutableLineStyle with which the plot will be visualized
     */
     func addPlotWithIdentifier(identifier:String, channel:EEGModelChannels, condition:EEGModelConditions, andLineStyle lineStyle:CPTMutableLineStyle){
-        let plot = realTimeStaticPlot(identifier: identifier, eegChannel:channel, eegCondition:condition, lineStyle:lineStyle)
+        let plot = EEGRealTimeStaticPlot(identifier: identifier, eegChannel:channel, eegCondition:condition, lineStyle:lineStyle)
         plotsArray.append(plot)
     }
     

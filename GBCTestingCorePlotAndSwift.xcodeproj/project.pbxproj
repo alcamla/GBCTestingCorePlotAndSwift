@@ -12,6 +12,7 @@
 		6C47F9461ADBFBDA0075C411 /* realTimeStaticPlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C47F9451ADBFBDA0075C411 /* realTimeStaticPlot.swift */; };
 		6C47F9511ADC077E0075C411 /* realTimeStaticSubPlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C47F9501ADC077E0075C411 /* realTimeStaticSubPlot.swift */; };
 		6C47F9531ADC313A0075C411 /* PlotsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C47F9521ADC313A0075C411 /* PlotsViewController.swift */; };
+		6C6489571B0F60E300C02F16 /* EEGRealTimeStaticPlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6489561B0F60E300C02F16 /* EEGRealTimeStaticPlot.swift */; };
 		6C8F3FB51AD4AB37006576CF /* GBCPlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C8F3FB41AD4AB37006576CF /* GBCPlot.swift */; };
 		6CA8F3B31ACC980D001C89DC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA8F3B21ACC980D001C89DC /* AppDelegate.swift */; };
 		6CA8F3B61ACC980D001C89DC /* GBCTestingCorePlotAndSwift.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6CA8F3B41ACC980D001C89DC /* GBCTestingCorePlotAndSwift.xcdatamodeld */; };
@@ -84,6 +85,7 @@
 		6C47F9451ADBFBDA0075C411 /* realTimeStaticPlot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = realTimeStaticPlot.swift; path = ../realTimeStaticPlot.swift; sourceTree = "<group>"; };
 		6C47F9501ADC077E0075C411 /* realTimeStaticSubPlot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = realTimeStaticSubPlot.swift; sourceTree = "<group>"; };
 		6C47F9521ADC313A0075C411 /* PlotsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlotsViewController.swift; sourceTree = "<group>"; };
+		6C6489561B0F60E300C02F16 /* EEGRealTimeStaticPlot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EEGRealTimeStaticPlot.swift; sourceTree = "<group>"; };
 		6C8F3FB41AD4AB37006576CF /* GBCPlot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GBCPlot.swift; path = ../GBCPlot.swift; sourceTree = "<group>"; };
 		6CA8F3AD1ACC980D001C89DC /* GBCTestingCorePlotAndSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GBCTestingCorePlotAndSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CA8F3B11ACC980D001C89DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				6C8F3FB41AD4AB37006576CF /* GBCPlot.swift */,
+				6C6489561B0F60E300C02F16 /* EEGRealTimeStaticPlot.swift */,
 				6C47F9451ADBFBDA0075C411 /* realTimeStaticPlot.swift */,
 				6C47F9501ADC077E0075C411 /* realTimeStaticSubPlot.swift */,
 			);
@@ -402,6 +405,7 @@
 				6CA8F3B31ACC980D001C89DC /* AppDelegate.swift in Sources */,
 				6CA9F5371AEF0B70004F239B /* EEGModel.swift in Sources */,
 				6C47F9531ADC313A0075C411 /* PlotsViewController.swift in Sources */,
+				6C6489571B0F60E300C02F16 /* EEGRealTimeStaticPlot.swift in Sources */,
 				6CA8F3B61ACC980D001C89DC /* GBCTestingCorePlotAndSwift.xcdatamodeld in Sources */,
 				6C47F9511ADC077E0075C411 /* realTimeStaticSubPlot.swift in Sources */,
 				6C8F3FB51AD4AB37006576CF /* GBCPlot.swift in Sources */,
