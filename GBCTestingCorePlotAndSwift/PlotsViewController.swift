@@ -160,11 +160,11 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         // Graph's hosting view
         let hostingView = view as! CPTGraphHostingView
         hostingView.hostedGraph = newGraph
-        
+        let plotAreaFrame = newGraph.plotAreaFrame!
         // Border
-        newGraph.plotAreaFrame.borderLineStyle = nil
-        newGraph.plotAreaFrame.cornerRadius    = 0.0
-        newGraph.plotAreaFrame.masksToBorder   = false
+        plotAreaFrame.borderLineStyle = nil
+        plotAreaFrame.cornerRadius    = 0.0
+        plotAreaFrame.masksToBorder   = false
         
         // Paddings
         newGraph.paddingLeft   = 0.0
@@ -172,11 +172,11 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         newGraph.paddingTop    = 0.0
         newGraph.paddingBottom = 0.0
         
-        newGraph.plotAreaFrame.paddingTop    = 15.0
-        newGraph.plotAreaFrame.paddingRight  = 15.0
-        newGraph.plotAreaFrame.paddingLeft   = 55.0
-        newGraph.plotAreaFrame.paddingBottom = 55.0
-        newGraph.plotAreaFrame.masksToBorder = false
+        plotAreaFrame.paddingTop    = 15.0
+        plotAreaFrame.paddingRight  = 15.0
+        plotAreaFrame.paddingLeft   = 55.0
+        plotAreaFrame.paddingBottom = 55.0
+        plotAreaFrame.masksToBorder = false
         
         // Asign to property
         realTimeScatterGraph = newGraph
@@ -195,7 +195,7 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         minorGridLineStyle.dashPattern = [CGFloat(3), CGFloat(3)]
         
         let axisSet = newGraph.axisSet as! CPTXYAxisSet
-        let xAxis = axisSet.xAxis
+        let xAxis = axisSet.xAxis!
         xAxis.labelingPolicy = CPTAxisLabelingPolicy.Automatic
         xAxis.orthogonalPosition = 0.0
         xAxis.majorGridLineStyle = majorGridLineStyle
@@ -224,7 +224,7 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         minorGridLineStyle.lineWidth = 0.25
         minorGridLineStyle.lineColor = CPTColor.blackColor().colorWithAlphaComponent(CGFloat(0.1))
         
-        let yAxis = axisSet.yAxis
+        let yAxis = axisSet.yAxis!
         yAxis.labelingPolicy = .Automatic
         yAxis.orthogonalPosition = 0.0
         yAxis.majorGridLineStyle = majorGridLineStyle
@@ -301,7 +301,7 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
     func insertDataToPlotsWithTimer(theTimer:NSTimer){
         
         let theGraph = realTimeScatterGraph!
-        let plotSpace = theGraph.defaultPlotSpace as CPTPlotSpace
+        let plotSpace = theGraph.defaultPlotSpace! as CPTPlotSpace
         
         // Update Ranges
         // In this version, the x range does not need to be updated
@@ -434,7 +434,7 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
             newLabel.offset       = yAx.labelOffset + yAx.majorTickLength
             yLabels.insert(newLabel)
         }
-        axisSet.yAxis.axisLabels = yLabels
+        axisSet.yAxis!.axisLabels = yLabels
         
         // Refresh the tick lines locations
         for lineCount in 1 ... yLabels.count{
@@ -443,7 +443,7 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
             let location = CGFloat(Double(lineCount) * offset)
             yTickLinesLocations.insert(location)
         }
-        axisSet.yAxis.majorTickLocations = yTickLinesLocations
+        axisSet.yAxis!.majorTickLocations = yTickLinesLocations
    
     }
     
@@ -471,11 +471,11 @@ class PlotsViewController: UIViewController, CPTGraphContainer {
         yLabels.insert(newLabel)
         //Set the updated labels
         let axisSet = realTimeScatterGraph?.axisSet as! CPTXYAxisSet
-        axisSet.yAxis.axisLabels = yLabels
+        axisSet.yAxis!.axisLabels = yLabels
         
         // Update the tick horizontal lines
         yTickLinesLocations.insert(CGFloat(Double(location+1) * offset))
-        axisSet.yAxis.majorTickLocations = yTickLinesLocations
+        axisSet.yAxis!.majorTickLocations = yTickLinesLocations
     }
     
     

@@ -77,11 +77,12 @@ class ViewController: UIViewController, CPTGraphContainer {
         // Graph's hosting view
         let hostingView = view as! CPTGraphHostingView
         hostingView.hostedGraph = newGraph
+        let plotAreaFrame = newGraph.plotAreaFrame!
         
         // Border
-        newGraph.plotAreaFrame.borderLineStyle = nil
-        newGraph.plotAreaFrame.cornerRadius    = 0.0
-        newGraph.plotAreaFrame.masksToBorder   = false
+        plotAreaFrame.borderLineStyle = nil
+        plotAreaFrame.cornerRadius    = 0.0
+        plotAreaFrame.masksToBorder   = false
         
         // Paddings
         newGraph.paddingLeft   = 0.0
@@ -90,11 +91,11 @@ class ViewController: UIViewController, CPTGraphContainer {
         newGraph.paddingBottom = 0.0
         
         
-        newGraph.plotAreaFrame.paddingTop    = 15.0
-        newGraph.plotAreaFrame.paddingRight  = 15.0
-        newGraph.plotAreaFrame.paddingLeft   = 55.0
-        newGraph.plotAreaFrame.paddingBottom = 55.0
-        newGraph.plotAreaFrame.masksToBorder = false
+        plotAreaFrame.paddingTop    = 15.0
+        plotAreaFrame.paddingRight  = 15.0
+        plotAreaFrame.paddingLeft   = 55.0
+        plotAreaFrame.paddingBottom = 55.0
+        plotAreaFrame.masksToBorder = false
         
         
         realTimeScatterGraph = newGraph
@@ -111,7 +112,7 @@ class ViewController: UIViewController, CPTGraphContainer {
         // Axis
         // X
         let axisSet = newGraph.axisSet as! CPTXYAxisSet
-        let xAxis = axisSet.xAxis
+        let xAxis = axisSet.xAxis!
         xAxis.labelingPolicy = CPTAxisLabelingPolicy.Automatic
         xAxis.orthogonalPosition = 0.0
         xAxis.majorGridLineStyle = majorGridLineStyle
@@ -128,7 +129,7 @@ class ViewController: UIViewController, CPTGraphContainer {
         xAxis.labelFormatter = labelFormatter
         
         // Y
-        let yAxis = axisSet.yAxis
+        let yAxis = axisSet.yAxis!
         yAxis.labelingPolicy = .Automatic
         yAxis.orthogonalPosition = 0.0
     
@@ -181,7 +182,7 @@ class ViewController: UIViewController, CPTGraphContainer {
     func newData(theTimer:NSTimer){
         
         let theGraph = realTimeScatterGraph!
-        let plotSpace = theGraph.defaultPlotSpace as CPTPlotSpace
+        let plotSpace = theGraph.defaultPlotSpace! as CPTPlotSpace
         
         // Update Ranges
         // X

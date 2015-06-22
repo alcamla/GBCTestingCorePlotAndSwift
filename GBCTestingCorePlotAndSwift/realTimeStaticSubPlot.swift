@@ -162,7 +162,7 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
         plot.interpolation = .Curved
         
         // Set the lineStyle for the plot
-        let plotLineStyle = plot.dataLineStyle.mutableCopy() as! CPTMutableLineStyle
+        let plotLineStyle = plot.dataLineStyle!.mutableCopy() as! CPTMutableLineStyle
         plotLineStyle.lineWidth = 3.0
         plotLineStyle.lineColor = CPTColor.greenColor()
         plot.dataLineStyle = plotLineStyle
@@ -267,12 +267,11 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
     
     // MARK: - PlotDataSource protocol conformance
     
-    func numberOfRecordsForPlot(plot: CPTPlot!) -> UInt {
+    func numberOfRecordsForPlot(plot: CPTPlot) -> UInt {
         return UInt(plotData.count)
     }
     
-    func numberForPlot(plot: CPTPlot!, field fieldEnum: UInt, recordIndex idx: UInt) -> AnyObject! {
-        
+    func numberForPlot(plot: CPTPlot, field fieldEnum: UInt, recordIndex idx: UInt) -> AnyObject? {
         switch CPTScatterPlotField(rawValue: Int(fieldEnum))! {
         case .X:
             let num = Double(plotData[Int(idx)].index)/Double(plotContainer!.samplingFrequency)
@@ -289,7 +288,7 @@ class realTimeStaticSubPlot: NSObject, CPTPlotDataSource {
                 } else{
                     dataValue = dataValue + (Double(location)*0.2)
                 }
-               
+                
             }
             return dataValue as NSNumber
             
